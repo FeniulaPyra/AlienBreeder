@@ -27,4 +27,7 @@ public class Breed {
 	public boolean equals(Breed otherBreed) {
 		return name.equals(otherBreed.getName());
 	}
+	public String toString() {
+		return name;
+	}
 }

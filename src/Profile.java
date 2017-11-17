@@ -3,15 +3,18 @@ import java.util.*;
 
 public class Profile implements Serializable{
 	ArrayList<Alien> aliens;
+	Object[] pocket;
 	int exp;
 	int level;
 	int coins;
+	int id;
 	
 	public Profile(ArrayList<Alien> inAliens, int inExp, int inLvl, int inCoins) {
 		aliens = inAliens;
 		exp = inExp;
 		level = inLvl;
 		coins = inCoins;
+		pocket = new Object[10];
 	}
 	
 	//*~~~SETTERS~~~*\\

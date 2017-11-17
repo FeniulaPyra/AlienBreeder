@@ -19,6 +19,7 @@ public class Alien {
 		value = strength = intelligence = 0;
 		mainBreed = null;
 	}
+	
 	/**
 	 * Generates an Alien given specifications
 	 * @param inB the Breed or head shape of the Alien
@@ -36,6 +37,11 @@ public class Alien {
 		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 		value = strength + intelligence + mainBreed.getBaseVal();
 	}
+	
+	public Alien(Alien copyAlien) {
+		this(copyAlien.getBreed(), copyAlien.getBreedColor(), copyAlien.getBreedPattern(), copyAlien.getBreedPatternColor());
+	}
+	
 	/**
 	 * Generates a random Alien based off of the player's level
 	 * @param inLvl the player's level
@@ -47,7 +53,7 @@ public class Alien {
 			System.out.println(General.BREEDS[startSect + 1].getLevel());
 		}
 		for(endSect = General.BREEDS.length; endSect > startSect && General.BREEDS[endSect - 1].getLevel() != inLvl; endSect--) {}
-		int randomAlienID = (int)(Math.random() * (endSect - startSect + 1) + startSect);
+		int randomAlienID = (int)(Math.random() * (endSect - startSect) + startSect);
 		mainBreed = General.BREEDS[randomAlienID];
 		bColor =  General.B_COLORS[(int)(Math.random() * General.B_COLORS.length)];
 		bPattern = General.B_PATTERNS[(int)(Math.random() * General.B_PATTERNS.length)];
@@ -74,6 +80,12 @@ public class Alien {
 	public void setBreedPatternColor(String inBPC) {
 		bPatColor = inBPC;
 	}
+	public void setStrength(int inStrength) {
+		strength = inStrength;
+	}
+	public void setIntel(int inIntel) {
+		intelligence = inIntel;
+	}
 	
 	//*~~~GETTERS~~~*\\
 	public String getName() {
@@ -97,7 +109,7 @@ public class Alien {
 	public int getStrength() {
 		return strength;
 	}
-	public int getInt() {
+	public int getIntel() {
 		return intelligence;
 	}
 	
@@ -105,14 +117,14 @@ public class Alien {
 	
 	public ArrayList<Alien> generatePotentialOffspring(Alien mate) {
 		
-		
+		boolean hasAlien = false;
 		ArrayList<Alien> offspring = new ArrayList<Alien>();
 		
 		for(int i = 0; i < 16; i++) {
 			//this for loop uses a binary number to count up to 15 from zero. Each place in the four-digit binary number is essentially a boolean representing
 			//one of the traits of an alien. A 0 signifies that the child will have the kind of trait of the first parent, and a 1 signifies that the child will
 			//have the trait of the second parent
-			String traits = Integer.toBinaryString(i);
+			String traits = Integer.toBinaryString(i) + "000";
 			
 			//the potential child alien
 			Alien toAdd = new Alien();
@@ -150,32 +162,24 @@ public class Alien {
 				toAdd.setBreedPatternColor(mate.getBreedPatternColor());
 			}
 			
+			name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
+			
 			//checks to make sure the program doesn't show the same possible child twice.
-			if(!offspring.contains(toAdd)) {
+			for(int q = 0; q < offspring.size(); q++) {
+				if(toAdd.equals(offspring.get(q))) {
+					hasAlien = true;
+				}
+			}
+			if(!hasAlien) {
 				offspring.add(toAdd);
 			}
+			hasAlien = false;
 		}
 		
 		return offspring;
-		
-		
-		//in case the above thing doesn't actually work T.T Please God spare us
-		/*offspring.add(new Alien(mainBreed, bColor, bPattern, bPatColor));
-		offspring.add(new Alien(mainBreed, bColor, bPattern, mate.getBreedPatternColor()));
-		offspring.add(new Alien(mainBreed, bColor, mate.getBreedPattern(), bPatColor));
-		offspring.add(new Alien(mainBreed, mate.getBreedColor(), bPattern, bPatColor));
-		offspring.add(new Alien(mate.getBreed(), bColor, bPattern, bPatColor));
-		offspring.add(new Alien(mate.getBreed(), bColor, bPattern, mate.getBreedPatternColor()));
-		offspring.add(new Alien(mate.getBreed(), bColor, mate.getBreedPattern(), bPatColor));
-		offspring.add(new Alien(mate.getBreed(), mate.getBreedColor(), bPattern, bPatColor));
-		offspring.add(new Alien(mate.getBreed(), mate.getBreedColor(), bPattern, mate.getBreedPatternColor()));
-		offspring.add(new Alien(mate.getBreed(), mate.getBreedColor(), mate.getBreedPattern(), bPatColor));
-		offspring.add(new Alien(mate.getBreed(), mate.getBreedColor(), mate.getBreedPattern(), mate.getBreedPatternColor()));
-		offspring.addAll(c)*/
-		
 	}
 	public boolean equals(Alien otherAlien) {
-		return (otherAlien.getBreed() == mainBreed && otherAlien.getBreedColor() == bColor && otherAlien.getBreedPattern() == bPattern && otherAlien.getBreedPatternColor() == bPatColor);
+		return (otherAlien.getBreed().equals(mainBreed) && otherAlien.getBreedColor().equals(bColor) && otherAlien.getBreedPattern().equals(bPattern) && otherAlien.getBreedPatternColor().equals(bPatColor));
 	}
 	public String toString() {
 		return (name
@@ -183,6 +187,9 @@ public class Alien {
 				+ "\n\t Value: " + value
 				+ "\n\t Intelligence: " + intelligence
 				+ "\n\t Strength: " + strength);
+	}
+	public void recalculateVal() {
+		value = strength + intelligence + mainBreed.getBaseVal();
 	}
 	
 }

@@ -1,7 +1,70 @@
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.sql.*;
 
-public class MainGame {
+import javax.swing.*;
+
+//TODO link to sql, move everything from GENERAL into a database. << sorta done
+//TODO for some reason, when breeding, the name of the child is not set to the breeds and colors...
+//TODO make a database of all the mabinogi cards, but have it include the effects of the cards. the current card database is useless and only shows numeric stats
+//TODO wtf is this todo doing in my alien breeder game ^
+
+//TODO CLEAN EVERYTHINGGGGGG!!!
+//TODO COMMENT EVERYTHINGGGG!!!
+//TODO FIX EVERYTHINGGGGGGGG!!!
+
+
+
+public class MainGame extends JFrame {
+	
+	public static JPanel mainPanel = new JPanel();
+	
+	/*public static JButton renameButton = new JButton("Rename");
+	public static JButton sellButton = new JButton("Sell");
+	public static JButton breedButton = new JButton("Breed");
+	public static JButton competeButton = new JButton("Compete");*/
+	public static JButton alienScreenButton = new JButton("Aliens");
+	public static JButton groupQButton = new JButton("Group Quest");
+	public static JButton questButton = new JButton("Quest");
+	public static JButton shopButton = new JButton("Shop");
+	public static JButton workButton = new JButton("Work");
+	public static JButton saveButton = new JButton("Save");
+	public static JButton loadButton = new JButton("Load");
+	
+	public static void main(String args[]) {
+		new MainGame();
+	}
+	
+	public MainGame() {
+		
+		setSize(600,600);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		this.setContentPane(mainPanel);
+		
+		/*mainPanel.add(renameButton);
+		mainPanel.add(sellButton);
+		mainPanel.add(breedButton);
+		mainPanel.add(competeButton);*/
+		mainPanel.add(alienScreenButton);
+		mainPanel.add(groupQButton);
+		mainPanel.add(questButton);
+		mainPanel.add(shopButton);
+		mainPanel.add(workButton);
+		mainPanel.add(saveButton);
+		mainPanel.add(loadButton);
+
+		Connection mainCon = sqlSetup();
+		sqlUpdate(mainCon);
+		
+	}
+	
+	
+	/*
 	public static void main(String[] args) {
 		/*TODO TODO TODO TODO TODO TODO
 		 * Shop
@@ -10,11 +73,13 @@ public class MainGame {
 		 * Saving/Loading
 		 * Adding aliens at the beginning of a game
 		 * Artifacts
-		 */
+		 * saving
+		 * going to work (searching through random stuff the spaceship picks up, i.e. dirt, ores, artifacts, aliens/etc)
+		 * perhaps convert everything to a joptionpane/etc. Make everything a popup. Maybe have one pane that is always just a list of all the aliens
+		 * and then other panes for other things. or just make it a jframe T.T
+		 * screw jframes im freaking done
+		 *
 		int  choice = -1;
-//		int coins = 0;
-//		int exp = 0;
-//		int level = 1;
 		Scanner input = new Scanner(System.in);
 		ArrayList<Alien> userInventory = new ArrayList<Alien>();
 		ArrayList<Alien> set = new ArrayList<Alien>();
@@ -22,21 +87,29 @@ public class MainGame {
 		Alien questAlien = new Alien(1);
 		Alien randomBreeder = new Alien(1); //TODO
 		Profile user = new Profile(userInventory, 0, 1, 100);
+		joptionFrame.setAlwaysOnTop(true);
+		
+		String SAVE_DIRECTORY = "c:\\programmings\\Alien Breeder\\Saves\\";
+		
+		
+		userInventory.add(new Alien(1));
+		userInventory.add(new Alien(1));
 		
 		while(choice != 0) {
 			//prompts the user with the menu of options
-			System.out.println("~~~~~Menu~~~~~"
-					+ "\n1. View Alien List"
-					+ "\n2. Breed an Alien"
-					+ "\n3. Sell an Alien"
-					+ "\n4. Rename an Alien"
-		/*TODO*/	+ "\n5. (WIP)~ Compete with Alien ~(WIP)"
-		/*TODO*/	+ "\n6. (WIP)~ Sets ~(WIP)" /*This is just a quest, but you have to breed all of the children of a random set of parents*/
-					+ "\n7. Quest"
-					+ "\n8. Shop"
-					+ "\n9. Save"
-					+ "\n10. Load"
-					+ "\n0. Quit");
+			System.out.println("~~~~~Menu~~~~~ C: " + user.getCoins() + " Exp: " + user.getExp() + " Level: " + user.getLevel()
+					+ "\n1. View Alien List"						//tested
+					+ "\n2. Breed an Alien"							//tested
+					+ "\n3. Sell an Alien"							//tested
+					+ "\n4. Rename an Alien"						//
+		/*TODO* 	+ "\n5. (WIP)~ Compete with Alien ~(WIP)"		//
+		/*TODO* 	+ "\n6. (WIP)~ Sets ~(WIP)" //This is just a quest, but you have to breed all of the children of a random set of parents (or generate a random array of 4 aliens or something) sets will give you all of the values of the aliens * 3
+		/*TODO* 	+ "\n7. Quest"									//
+		/*TODO* 	+ "\n8. Shop"									//
+		/*TODO* 	+ "\n9. Go to Work"								//
+		/*TEST* 	+ "\n10. Save"									//
+		/*TEST* 	+ "\n11. Load"									//
+					+ "\n0. Quit");									//tested
 			choice = input.nextInt();
 			
 			//checks what the user chose
@@ -47,31 +120,29 @@ public class MainGame {
 					break;
 				case 2:
 					//Breed Aliens
-					while(choice != 0) {
-						//the aliens to be bred
-						Alien alienA = null;
-						Alien alienB = null;
-						//the array of possible offspring of the parents 
-						ArrayList<Alien> possibleOffspring = new ArrayList<Alien>();
+					//the aliens to be bred
+					Alien alienA = null;
+					Alien alienB = null;
+					//the array of possible offspring of the parents 
+					ArrayList<Alien> possibleOffspring = new ArrayList<Alien>();
+
+					//prompts the user for the first alien parent
+					alienA = selectAlien(userInventory);
+					//prompts the user for the second alien parent
+					alienB = selectAlien(userInventory);
+					
+					if(alienA != null && alienB != null) {
+						if(alienA == alienB) {
+							System.out.println("You can't breed aliens with themselves!!");
+						}
+						else {
 						
-						//shows the aliens in the user's inventory
-						showList(userInventory);
-						System.out.println("0. Exit");
-						choice = input.nextInt();
-		/*TODO*/		if(choice != 0) {
-							//prompts the user for the first alien parent
-							System.out.println("Type the number next to the first alien parent");
-							alienA = userInventory.get(choice);
-							//prompts the user for the second alien parent
-							System.out.println("Type the number next to the second alien parent");
-							alienB = userInventory.get(input.nextInt());
-							
 							//shows the user the possible children of the determined parents
 							System.out.println("These are the possible children:");
 							possibleOffspring = alienA.generatePotentialOffspring(alienB);
-							showList(possibleOffspring);
+							showListBreedsOnly(possibleOffspring);
 							//shows the range of strength and intelligence of the child
-							System.out.println("Intelligence will be between " + ((alienA.getInt() >= alienB.getInt()) ? alienB.getInt() + " and " + (alienB.getInt() + 2): alienA.getInt() + " and " + (alienA.getInt() + 2)));
+							System.out.println("Intelligence will be between " + ((alienA.getIntel() >= alienB.getIntel()) ? alienB.getIntel() + " and " + (alienB.getIntel() + 2): alienA.getIntel() + " and " + (alienA.getIntel() + 2)));
 							System.out.println("Strength will be between " + ((alienA.getStrength() >= alienB.getStrength()) ? alienB.getStrength() + " and " + (alienB.getStrength() + 2): alienA.getStrength() + " and " + alienA.getStrength()));
 							
 							//prompts the user to confirm
@@ -80,6 +151,10 @@ public class MainGame {
 							//adds the new alien to the user's inventory
 							if(input.nextInt() == 1) {
 								Alien child = possibleOffspring.get((int)(Math.random() * possibleOffspring.size()));
+								child.setStrength((alienA.getStrength() > alienB.getStrength() ? alienB.getStrength(): alienA.getStrength()) + (int)(Math.random() * 3));
+								child.setIntel((alienA.getIntel() > alienB.getIntel() ? alienB.getIntel(): alienA.getIntel()) + (int)(Math.random() * 3));
+								child.recalculateVal();
+								
 								userInventory.add(child);
 								
 								//gives the user exp and levels up user if applicable
@@ -94,36 +169,38 @@ public class MainGame {
 					break;
 				case 3:
 					//Sell an Alien
+					//prompts the user for the alien to be sold
+					Alien alienToSell = selectAlien(userInventory);
+					System.out.println(alienToSell);
+					userInventory.remove(alienToSell);
+					user.addCoins(alienToSell.getValue());
+					choice = -1;
+					break;
+				case 4:
+					//Rename
+					//prompts the user for the alien to be renamed
 					while(choice != 0) {
-						//shows the inventory to the user
-						showList(userInventory);
-						System.out.println("0. Exit");
-						//prompts the user for the alien to be sold
-						System.out.println("Type the number next to the alien you want to sell.");
-						choice = input.nextInt();
-						try {
-							if(choice != 0) {
-								Alien alienToSell = userInventory.get(choice - 1);
-								System.out.println(alienToSell);
-								System.out.println("Do you want to sell this Alien?\n0. Exit\n1. Yes, Sell the Alien\n2. Choose another Alien");
-								if(choice == 1) {
-									userInventory.remove(alienToSell);
-									user.addCoins(alienToSell.getValue());
-								}
-							}
-						}
-						catch(IndexOutOfBoundsException e) {
-							System.out.println("That alien doesn't exist.");
+						Alien alienToRename = selectAlien(userInventory);
+						System.out.println(alienToRename);
+						System.out.println("Do you want to rename this Alien?\n0. Exit\n1. Yes, Sell the Alien\n2. Choose another Alien");
+						if(choice == 1) {
+							System.out.println("Please type the new name:");
+							alienToRename.setName(input.nextLine());
+							choice = -1;
 						}
 					}
 					break;
-				case 4:
-					break;
 				case 5:
+					//Compete
 					//TODO
+					WIP();
+					choice = -1;
 					break;
 				case 6:
+					//Sets
 					//TODO
+					WIP();
+					choice = -1;
 					break;
 				case 7:
 					//Quest
@@ -158,24 +235,45 @@ public class MainGame {
 							System.out.println("You don't have the Alien! Come back when you have the Alien!");
 						}
 					}
+					choice = -1;
 					break;
 				case 8:
 					//Shop
+					choice = -1;
 					break;
 				case 9:
-					//Save
-					break;
+					//going to work
 				case 10:
+					//Save
+					System.out.println("Do you want to save over a previous file or save a new file?\n0. Exit\n1. Save over an old file\n2. Save a new file");
+					choice = input.nextInt();
+					if(choice == 1) {
+						save(user, (String)JOptionPane.showInputDialog(joptionFrame, "SAVE", "Choose a save file: ", JOptionPane.QUESTION_MESSAGE, null, new File(SAVE_DIRECTORY).listFiles(), ""));
+					}
+					else if(choice == 2) {
+						System.out.println("Please type the name of your profile:");
+						save(user, input.nextLine());
+					}
+					choice = -1;
+					break;
+				case 11:
 					//Load
+					user = load((File)JOptionPane.showInputDialog(joptionFrame, "LOAD", "Choose a save file: ", JOptionPane.QUESTION_MESSAGE, null, new File(SAVE_DIRECTORY).listFiles(), ""));
+					break;
+				case 12:
+					//test aliens
+					for(int i = 0; i < 15; i++) {
+						System.out.println((new Alien(user.getLevel())).getName());
+					}
 					break;
 				case 0:
 					//exit
 					System.out.println("Are you sure? Don't forget to save first!\n0. Yes, I'm Leaving!\n1. Nevermind!");
 					choice = input.nextInt();
+					break;
 				default:
 					System.out.println("badInput");
 			}
-			choice = -1;
 		}
 	}
 	public static void showList(ArrayList<Alien> inAliens) {
@@ -184,21 +282,164 @@ public class MainGame {
 			System.out.println((i + 1) + ". " + current);
 		}
 	}
-	//TODO WIP
+	public static void showListBreedsOnly(ArrayList<Alien> inAliens) {
+		for(int i = 0; i < inAliens.size(); i++) {
+			Alien current = inAliens.get(i);
+			System.out.println((i + 1) + ". " + current.getBreedColor() + " " + current.getBreedPatternColor() + " " + current.getBreedPattern() + " " + current.getBreed());
+		}
+	}
+	//TODO WIP needs to check if file already exists/prompt user for preexisting file when saving
 	public static void save(Profile inUser, String name) {
 		try {
-			File save = new File("..\\Saves\\");
-			System.out.println(0/0);
+			File save = new File(name + ".ser");
+			FileOutputStream fos= new FileOutputStream(save);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(inUser);
+			System.out.println("Saved at " + save);
+			oos.close();
+			fos.close();
 		}
 		catch(Exception e) {
-			System.out.println("There was a problem! " + e);
+			System.out.println("There was a problem while saving! " + e);
 		}
+	}
+	public static Profile load(File inUser) {
+		Profile tempUser = null;
+		try {
+			FileInputStream fis = new FileInputStream(inUser);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			tempUser = (Profile)ois.readObject();
+			ois.close();
+			fis.close();
+		}
+		catch(FileNotFoundException f) {
+			System.out.println("That file was not found!!" + f);
+		}
+		catch(IOException i) {
+			System.out.println("There was a problem!" + i);
+		}
+		catch(ClassNotFoundException c) {
+			System.out.println("That file is not a profile!" + c);
+		}
+		return tempUser;
 	}
 	public static void checkLevelUp(Profile inUser) {
 		if(inUser.getExp() >= Math.pow((inUser.getLevel() * 10), 2)) {
 			inUser.setExp(-(int)(Math.pow((inUser.getLevel() * 10), 2)));
 			inUser.setLevel(inUser.getLevel() + 1);
 			System.out.println("You leveled up!");
+		}
+	}
+	public static void WIP() {
+		System.out.println("Coming Soon!");
+	}
+	public static Alien selectAlien(ArrayList<Alien> inAliens) {
+		return (Alien)JOptionPane.showInputDialog(joptionFrame, "SELECT ALIEN", "Choose an alien: ", JOptionPane.QUESTION_MESSAGE, null, inAliens.toArray(), "");
+	}*/
+	public void buttonWatcherMainScreen() {
+		/*renameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		sellButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		breedButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		competeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});*/
+		alienScreenButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		groupQButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		shopButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			
+			}
+		});
+		questButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		workButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		loadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+	}
+	
+	public Alien selectAlien(String function, ArrayList<Alien> alienChoices) {
+		return (Alien) JOptionPane.showInputDialog(null, "Select an alien: ", function, JOptionPane.QUESTION_MESSAGE, null, alienChoices.toArray(), "Select");
+	}
+	
+	public Connection sqlSetup() {
+		String host = "jdbc:sqlite:C:/SQLite/db/alienGame.db";
+		Connection con;
+		
+		try {
+			 con = DriverManager.getConnection(host);
+			System.out.println("Connection successful.");
+			return con;
+		}
+		catch (SQLException s) {
+			System.out.println("SQL Error! " + s);
+		}
+		catch (Exception e) { //<< Lazy
+			System.out.println("Error! "  + e);
+		}
+		return null;
+	}
+	public void  work() {
+		
+	}
+	public void sqlUpdate(Connection inCon) {
+		System.out.println("");
+		try {
+			System.out.println("Beginning breeds update...");
+			General.updateBreedTable(inCon);
+		}
+		catch(Exception e) {
+			System.out.println("Error at breeds update: " + e);
+		}
+		try {
+			System.out.println("Beginning aliens update...");
+			General.updateAlienTable(inCon);
+		}
+		catch(Exception e) {
+			System.out.println("Error at aliens update: " + e);
+		}
+		try {
+			System.out.println("Beginning artifacts update...");
+			General.updateArtifactTable(inCon);
+		}
+		catch(Exception e) {
+			System.out.println("Error at artifacts update: " + e);
 		}
 	}
 }
