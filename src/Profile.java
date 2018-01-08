@@ -2,12 +2,16 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Profile implements Serializable{
-	ArrayList<Alien> aliens;
-	Object[] pocket;
+	ArrayList<Alien> aliens; //probably not sorted, maybe TODO?
+	Object[] pocket; //also not sorted, but that's ok
 	int exp;
 	int level;
 	int coins;
 	int id;
+	
+	public Profile() {
+		this(new ArrayList<Alien>(), 0, 1, 100);
+	}
 	
 	public Profile(ArrayList<Alien> inAliens, int inExp, int inLvl, int inCoins) {
 		aliens = inAliens;
@@ -48,5 +52,10 @@ public class Profile implements Serializable{
 	}
 	public void addCoins(int toAdd) {
 		coins += toAdd;
+	}
+	
+	//*~~~OTHER~~~*\\
+	public void sortAliens() {
+		//TODO do the thing
 	}
 }

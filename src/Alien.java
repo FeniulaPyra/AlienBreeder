@@ -47,20 +47,31 @@ public class Alien {
 	 * @param inLvl the player's level
 	 */
 	public Alien(int inLvl) {
+		//the indexes bookending the breeds with the same level as the player
 		int startSect;
 		int endSect;
-		for(startSect = -1; startSect < General.BREEDS.length - 1 && General.BREEDS[startSect + 1].getLevel() != inLvl; startSect++) {
-			System.out.println(General.BREEDS[startSect + 1].getLevel());
-		}
+		
+		//finds the start sections
+		for(startSect = -1; startSect < General.BREEDS.length - 1 && General.BREEDS[startSect + 1].getLevel() != inLvl; startSect++) {}
+		
+		//finds the end section
 		for(endSect = General.BREEDS.length; endSect > startSect && General.BREEDS[endSect - 1].getLevel() != inLvl; endSect--) {}
+		
+		//gets the random alien
 		int randomAlienID = (int)(Math.random() * (endSect - startSect) + startSect);
+		
+		//sets all of the breed/etc
 		mainBreed = General.BREEDS[randomAlienID];
 		bColor =  General.B_COLORS[(int)(Math.random() * General.B_COLORS.length)];
 		bPattern = General.B_PATTERNS[(int)(Math.random() * General.B_PATTERNS.length)];
 		bPatColor = General.B_PAT_COLORS[(int)(Math.random() * General.B_PAT_COLORS.length)];
+		
+		//randomizes numeric values
 		strength = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 		value = strength + intelligence + mainBreed.getBaseVal();
+		
+		//sets name to breed/etc
 		name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
 	}
 	

@@ -18,6 +18,6 @@ public class Artifact {
 	}
 	//Creates a random artifact of a given level
 	public Artifact(int level) {
-		
+		//do some sql stuff yaay
 	}
 }

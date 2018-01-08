@@ -8,30 +8,32 @@ import javax.swing.*;
 
 //TODO link to sql, move everything from GENERAL into a database. << sorta done
 //TODO for some reason, when breeding, the name of the child is not set to the breeds and colors...
-//TODO make a database of all the mabinogi cards, but have it include the effects of the cards. the current card database is useless and only shows numeric stats
-//TODO wtf is this todo doing in my alien breeder game ^
+//TODO do the jframes
 
 //TODO CLEAN EVERYTHINGGGGGG!!!
 //TODO COMMENT EVERYTHINGGGG!!!
 //TODO FIX EVERYTHINGGGGGGGG!!!
 
-
+//TODO use a tabbed pane inside a cardlayout jframe haha fun yay
 
 public class MainGame extends JFrame {
 	
 	public static JPanel mainPanel = new JPanel();
+	public static JTabbedPane jTPane = new JTabbedPane();
+	private static AlienPanel aliens;
+	private static WorkPanel work;
 	
-	/*public static JButton renameButton = new JButton("Rename");
-	public static JButton sellButton = new JButton("Sell");
-	public static JButton breedButton = new JButton("Breed");
-	public static JButton competeButton = new JButton("Compete");*/
-	public static JButton alienScreenButton = new JButton("Aliens");
-	public static JButton groupQButton = new JButton("Group Quest");
-	public static JButton questButton = new JButton("Quest");
-	public static JButton shopButton = new JButton("Shop");
-	public static JButton workButton = new JButton("Work");
-	public static JButton saveButton = new JButton("Save");
+	//public static JButton alienScreenButton = new JButton("Aliens"); //opens the alien management screen
+	public static JButton questButton = new JButton("Quest"); //does pretty much the same thing as the group quest button
+	public static JButton groupQButton = new JButton("Group Quest");//should come up with a dialog box: lists the quest, has complete, back, and reject quest buttons.
+	public static JButton shopButton = new JButton("Shop"); //opens the shop screen
+	//public static JButton workButton = new JButton("Work"); //opens the work screen
+	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
+	
+	private Profile user;
+
+	
 	
 	public static void main(String args[]) {
 		new MainGame();
@@ -39,28 +41,35 @@ public class MainGame extends JFrame {
 	
 	public MainGame() {
 		
-		setSize(600,600);
+		setSize(300, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setResizable(false);
 		setLocationRelativeTo(null);
-		this.setContentPane(mainPanel);
+		this.setContentPane(jTPane);
 		
 		/*mainPanel.add(renameButton);
 		mainPanel.add(sellButton);
 		mainPanel.add(breedButton);
 		mainPanel.add(competeButton);*/
-		mainPanel.add(alienScreenButton);
-		mainPanel.add(groupQButton);
+		//mainPanel.add(alienScreenButton);
 		mainPanel.add(questButton);
+		mainPanel.add(groupQButton);
 		mainPanel.add(shopButton);
-		mainPanel.add(workButton);
+		//mainPanel.add(workButton);
 		mainPanel.add(saveButton);
 		mainPanel.add(loadButton);
 
-		Connection mainCon = sqlSetup();
-		sqlUpdate(mainCon);
+		//Connection mainCon = sqlSetup();
+		//sqlUpdate(mainCon);
 		
+		user = new Profile(); //TODO save/load sequence
+		aliens = new AlienPanel(user);
+		work = new WorkPanel(user);
+		
+		jTPane.addTab("Main", mainPanel);
+		jTPane.addTab("Aliens", aliens);
+		jTPane.addTab("Work", work);
 	}
 	
 	
@@ -337,31 +346,11 @@ public class MainGame extends JFrame {
 		return (Alien)JOptionPane.showInputDialog(joptionFrame, "SELECT ALIEN", "Choose an alien: ", JOptionPane.QUESTION_MESSAGE, null, inAliens.toArray(), "");
 	}*/
 	public void buttonWatcherMainScreen() {
-		/*renameButton.addActionListener(new ActionListener() {
+		/*alienScreenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		sellButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		breedButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		competeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+				aliens = new AlienPanel(user);
 			}
 		});*/
-		alienScreenButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
 		groupQButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -369,7 +358,7 @@ public class MainGame extends JFrame {
 		});
 		shopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
+				
 			}
 		});
 		questButton.addActionListener(new ActionListener() {
@@ -377,23 +366,24 @@ public class MainGame extends JFrame {
 				
 			}
 		});
-		workButton.addActionListener(new ActionListener() {
+		/*workButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				work = new WorkPanel(user);
 			}
-		});
+		});*/
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				WIP();
 			}
 		});
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				WIP();
 			}
 		});
 	}
 	
+	//TODO probs don't need this anymore
 	public Alien selectAlien(String function, ArrayList<Alien> alienChoices) {
 		return (Alien) JOptionPane.showInputDialog(null, "Select an alien: ", function, JOptionPane.QUESTION_MESSAGE, null, alienChoices.toArray(), "Select");
 	}
@@ -415,8 +405,8 @@ public class MainGame extends JFrame {
 		}
 		return null;
 	}
+	//TODO probs don't need this either
 	public void  work() {
-		
 	}
 	public void sqlUpdate(Connection inCon) {
 		System.out.println("");
@@ -441,5 +431,8 @@ public class MainGame extends JFrame {
 		catch(Exception e) {
 			System.out.println("Error at artifacts update: " + e);
 		}
+	}
+	public void WIP() {
+		JOptionPane.showConfirmDialog(this, "WIP", "Coming Soon!", JOptionPane.OK_CANCEL_OPTION);
 	}
 }

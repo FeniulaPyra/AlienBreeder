@@ -1,5 +1,5 @@
 import java.sql.*;
-import org.sqlite.*;
+//import org.sqlite.*;
 
 //TODO handwrite through the damn loop stop being lazy
 //TODO but theres like 8 loops
@@ -59,6 +59,8 @@ public abstract class General {
 	 * These are collectables that can be bought in the shop. The name of an artifact will be in the following form: [Material] [Alien Type] [Artifact Type]
 	 * For example, you may have a Glass Weazo Picture, or a Cardboard Chourov Toy.
 	 */
+	
+	public static final String[] JUNK_TYPES = {"Dirt", "Dead Flower", "Styrafoam cup", "Magical Spoon", "Old Bread", "Unidentifyable Glob", "Rusty Metal"};
 	
 	//SHOULD loop through the breeds array and add all of the breeds to the breeds table
 	public static final void updateBreedTable(Connection inCon) {
