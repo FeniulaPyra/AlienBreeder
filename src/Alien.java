@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Alien {
+public class Alien extends InventoryItem {
 	private String name;
 	private Breed mainBreed; //Head shape
 	private String bColor; //head Color;
@@ -76,9 +76,6 @@ public class Alien {
 	}
 	
 	//*~~~SETTERS~~~*\\
-	public void setName(String inName) {
-		name = inName;
-	}
 	public void setBreed(Breed inB) {
 		mainBreed = inB;
 	}
@@ -99,9 +96,6 @@ public class Alien {
 	}
 	
 	//*~~~GETTERS~~~*\\
-	public String getName() {
-		return name;
-	}
 	public Breed getBreed() {
 		return mainBreed;
 	}
@@ -113,9 +107,6 @@ public class Alien {
 	}
 	public String getBreedPatternColor() {
 		return bPatColor;
-	}
-	public int getValue() {
-		return value;
 	}
 	public int getStrength() {
 		return strength;
@@ -192,12 +183,15 @@ public class Alien {
 	public boolean equals(Alien otherAlien) {
 		return (otherAlien.getBreed().equals(mainBreed) && otherAlien.getBreedColor().equals(bColor) && otherAlien.getBreedPattern().equals(bPattern) && otherAlien.getBreedPatternColor().equals(bPatColor));
 	}
-	public String toString() {
+	public String output() {
 		return (name
 				+ "\n\t Type: " + bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName()
 				+ "\n\t Value: " + value
 				+ "\n\t Intelligence: " + intelligence
 				+ "\n\t Strength: " + strength);
+	}
+	public String toString() {
+		return name;
 	}
 	public void recalculateVal() {
 		value = strength + intelligence + mainBreed.getBaseVal();

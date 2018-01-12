@@ -1,5 +1,5 @@
 
-public class Artifact {
+public class Artifact extends InventoryItem {
 	private String name;
 	private Breed alienType;
 	private int value;

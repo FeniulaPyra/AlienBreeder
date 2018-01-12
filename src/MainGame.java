@@ -64,6 +64,12 @@ public class MainGame extends JFrame {
 		//sqlUpdate(mainCon);
 		
 		user = new Profile(); //TODO save/load sequence
+		
+		
+		for(int i = 0; i < 4; i++) {
+			user.aliens.add(new Alien(user.getLevel()));
+		}
+		
 		aliens = new AlienPanel(user);
 		work = new WorkPanel(user);
 		

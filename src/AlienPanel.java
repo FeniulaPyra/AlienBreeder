@@ -7,10 +7,12 @@ import javax.swing.*;
 //TODO use a boxlayout nested in a 2-column, 1-row gridlayout
 //Gah ^
 public class AlienPanel extends JPanel {
+	
 	public JButton sell; //opens confirmation box, yes sells, no cancels
 	public JButton rename; //opens dlg box with input, takes new name, has cancel button
 	public JButton breed; //opens dlg box with list of other aliens. upon selection, opens another dlg box showing possible offspring, upon confirm, breed, upon cancel, go back to prev box
 	public JButton compete; //idk man TODO
+	public JButton update;
 	
 	public JLabel name; //alien name
 	public JLabel breedLabel; //the alien's breed, pattern, color, etc
@@ -18,6 +20,7 @@ public class AlienPanel extends JPanel {
 	
 	public JComboBox<Alien> selection;
 	public Alien toDisplay;
+	public ImageIcon breedPic; //<< need the other things too.
 	
 	AlienPanel(Profile inUser) {
 		sell = new JButton("Sell");
@@ -25,16 +28,24 @@ public class AlienPanel extends JPanel {
 		breed = new JButton("Breed");
 		compete = new JButton("Compete (WIP) ");
 		
+		name = new JLabel("Name: ");
+		breedLabel = new JLabel("Breed: ");
+				
+		breedPic = null;
+		picture = null;
+		
 		//populates the combo box with the user's aliens
 		selection = new JComboBox<Alien>(inUser.aliens.toArray(new Alien[inUser.aliens.size()]));
 		//shows the first alien in the user's inventory. 
 		selection.setSelectedItem(null);
 		toDisplay = null;
 		
+		add(selection);
 		add(rename);
 		add(breed);
 		add(compete);
 		add(sell);
+		
 	}
 
 	private void alienButtonSetup() {
@@ -62,6 +73,17 @@ public class AlienPanel extends JPanel {
 		compete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO WIP
+			}
+		});
+		selection.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(selection.getSelectedItem() != null) {
+					//gets the selected item and displays its name and breed
+					toDisplay = (Alien)selection.getSelectedItem();
+					
+					name.setText(toDisplay.getName());
+					breedLabel.setText(toDisplay.getBreedColor() + " " + toDisplay.getBreedPatternColor() + " " + toDisplay.getBreedPattern() + " " + toDisplay.getBreed().getName());
+				}
 			}
 		});
 	}

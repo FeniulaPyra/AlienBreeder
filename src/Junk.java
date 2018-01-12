@@ -1,5 +1,5 @@
 
-public class Junk {
+public class Junk extends InventoryItem {
 	String name;
 	int value;
 	
@@ -10,5 +10,6 @@ public class Junk {
 	public Junk() {
 		this(General.JUNK_TYPES[(int)(Math.random() * General.JUNK_TYPES.length)], 0);
 	}
+	
 	
 }

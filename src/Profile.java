@@ -2,12 +2,14 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Profile implements Serializable{
-	ArrayList<Alien> aliens; //probably not sorted, maybe TODO?
-	Object[] pocket; //also not sorted, but that's ok
-	int exp;
-	int level;
-	int coins;
-	int id;
+	public ArrayList<Alien> aliens; //probably not sorted, maybe TODO?
+	public ArrayList<Artifact> artifacts;
+	public ArrayList<Junk> other;
+	public Object[] pocket; //also not sorted, but that's ok
+	private int exp;
+	private int level;
+	private int coins;
+	private int id;
 	
 	public Profile() {
 		this(new ArrayList<Alien>(), 0, 1, 100);
@@ -55,7 +57,49 @@ public class Profile implements Serializable{
 	}
 	
 	//*~~~OTHER~~~*\\
-	public void sortAliens() {
-		//TODO do the thing
+	
+	public void sort(ArrayList<InventoryItem> inArray) {
+		int toCheck, index;
+
+		//checks each element against everything else
+		for(toCheck = 1; toCheck < inArray.size(); toCheck++) {
+			for(index = toCheck - 1; index >= 0 && inArray.get(index).getName().compareTo(inArray.get(toCheck).getName()) > 0; index--) {
+				inArray.add(index + 1, inArray.remove(index));
+				index--;
+			}
+			toCheck = index + 1;
+		}
+	}
+	
+	//NOTE these methods might seem redundant, because the arrays are public, but they aren't redundant, because they sort stuff.
+	//NOTE there's probably too many anyways but meh
+	
+	//Adds individual things
+	public void add(Alien toAdd) {
+		if(!aliens.isEmpty()) {
+			int i;
+			for(i = aliens.size() - 1; i >= 0 && aliens.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
+			aliens.add(i, toAdd);
+		} else {
+			aliens.add(toAdd);
+		}
+		System.out.println(toAdd);
+	}
+	
+	//Adds many things
+	public void addAliens(ArrayList<Alien> toAdd) {
+		for(int i = 0; i < toAdd.size(); i++) {
+			aliens.add(toAdd.get(i));
+		}
+	}
+	public void addArtifacts(ArrayList<Artifact> toAdd) {
+		for(int i = artifacts.size(); i < toAdd.size(); i--) {
+			artifacts.add(toAdd.get(i));
+		}
+	}
+	public void addJunks(ArrayList<Junk> toAdd) {
+		for(int i = 0; i < toAdd.size(); i++) {
+			other.add(toAdd.get(i));
+		}
 	}
 }
