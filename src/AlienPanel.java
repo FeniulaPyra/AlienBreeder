@@ -14,23 +14,28 @@ public class AlienPanel extends JPanel {
 	public JButton compete; //idk man TODO
 	public JButton update;
 	
-	public JLabel name; //alien name
-	public JLabel breedLabel; //the alien's breed, pattern, color, etc
+	public JLabel nameLabel; //the alien's breed, pattern, color, etc
+	public JLabel value;
+	public JLabel intel;
+	public JLabel strength;
 	public JLabel picture; //TODO will probably have to switch this to a graphics pane or something because recoloring. for now, leave it
 	
 	public JComboBox<Alien> selection;
 	public Alien toDisplay;
 	public ImageIcon breedPic; //<< need the other things too.
 	
+	public Profile user;
+	
 	AlienPanel(Profile inUser) {
 		sell = new JButton("Sell");
 		rename = new JButton("Rename");
 		breed = new JButton("Breed");
 		compete = new JButton("Compete (WIP) ");
+		nameLabel = new JLabel("Name: ");
+		value = new JLabel("$");
+		intel = new JLabel("Intelligence: ");
+		strength = new JLabel("Strength");
 		
-		name = new JLabel("Name: ");
-		breedLabel = new JLabel("Breed: ");
-				
 		breedPic = null;
 		picture = null;
 		
@@ -40,12 +45,21 @@ public class AlienPanel extends JPanel {
 		selection.setSelectedItem(null);
 		toDisplay = null;
 		
+		this.setLayout(new GridLayout(9, 1));
+		
 		add(selection);
+		add(nameLabel);
+		add(value);
+		add(intel);
+		add(strength);
 		add(rename);
 		add(breed);
 		add(compete);
 		add(sell);
 		
+		user = inUser;
+		
+		alienButtonSetup();
 	}
 
 	private void alienButtonSetup() {
@@ -54,14 +68,16 @@ public class AlienPanel extends JPanel {
 				//opens confirmation box
 				//if yes...
 				if(JOptionPane.showConfirmDialog(null, "Do you want to sell this" + toDisplay.getName() + "alien?", "Sell Alien", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-					
+					user.addCoins(toDisplay.getValue());
+					selection.removeItemAt(selection.getSelectedIndex());
 				}
 			}
 		});
 		rename.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//opens input dialog box and asks for new name.
-				toDisplay.setName(JOptionPane.showInputDialog("Please type the new name: ")); //TODO Check for possible problems with hexadress: not sure if JCB does copy constructors or not.
+				toDisplay.setName(JOptionPane.showInputDialog("Please type the new name: "));
+				updateLabels();
 			}
 		});
 		breed.addActionListener(new ActionListener() {
@@ -79,12 +95,17 @@ public class AlienPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(selection.getSelectedItem() != null) {
 					//gets the selected item and displays its name and breed
-					toDisplay = (Alien)selection.getSelectedItem();
-					
-					name.setText(toDisplay.getName());
-					breedLabel.setText(toDisplay.getBreedColor() + " " + toDisplay.getBreedPatternColor() + " " + toDisplay.getBreedPattern() + " " + toDisplay.getBreed().getName());
+					updateLabels();
 				}
 			}
 		});
+	}
+	public void updateLabels() {
+		toDisplay = (Alien)selection.getSelectedItem();
+		
+		nameLabel.setText("Name: " + toDisplay.getName());
+		value.setText("$" + toDisplay.getValue());
+		intel.setText("Intelligence: " + toDisplay.getIntel());
+		strength.setText("Strength: " + toDisplay.getStrength());
 	}
 }

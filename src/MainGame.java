@@ -23,16 +23,18 @@ public class MainGame extends JFrame {
 	private static AlienPanel aliens;
 	private static WorkPanel work;
 	
-	//public static JButton alienScreenButton = new JButton("Aliens"); //opens the alien management screen
 	public static JButton questButton = new JButton("Quest"); //does pretty much the same thing as the group quest button
 	public static JButton groupQButton = new JButton("Group Quest");//should come up with a dialog box: lists the quest, has complete, back, and reject quest buttons.
 	public static JButton shopButton = new JButton("Shop"); //opens the shop screen
-	//public static JButton workButton = new JButton("Work"); //opens the work screen
 	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
 	
 	private Profile user;
 
+	private JLabel profName;
+	private JLabel coins;
+	private JLabel exp;
+	private JLabel level;
 	
 	
 	public static void main(String args[]) {

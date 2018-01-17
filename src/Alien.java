@@ -191,7 +191,7 @@ public class Alien extends InventoryItem {
 				+ "\n\t Strength: " + strength);
 	}
 	public String toString() {
-		return name;
+		return bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
 	}
 	public void recalculateVal() {
 		value = strength + intelligence + mainBreed.getBaseVal();

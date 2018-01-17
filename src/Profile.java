@@ -5,7 +5,7 @@ public class Profile implements Serializable{
 	public ArrayList<Alien> aliens; //probably not sorted, maybe TODO?
 	public ArrayList<Artifact> artifacts;
 	public ArrayList<Junk> other;
-	public Object[] pocket; //also not sorted, but that's ok
+	public int pocket; //also not sorted, but that's ok
 	private int exp;
 	private int level;
 	private int coins;
@@ -20,7 +20,7 @@ public class Profile implements Serializable{
 		exp = inExp;
 		level = inLvl;
 		coins = inCoins;
-		pocket = new Object[10];
+		pocket = 10;
 	}
 	
 	//*~~~SETTERS~~~*\\
@@ -43,6 +43,9 @@ public class Profile implements Serializable{
 	}
 	public int getCoins() {
 		return coins;
+	}
+	public int getPocket() {
+		return pocket;
 	}
 	
 	//*~~~ADDERS~~~*\\
