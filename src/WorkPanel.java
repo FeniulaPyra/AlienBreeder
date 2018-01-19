@@ -12,6 +12,11 @@ public class WorkPanel extends JPanel {
 	JButton keep;
 	JButton discard;
 	JButton goHome;
+	JButton drop;
+	
+	JComboBox<InventoryItem> items;
+	
+	JLabel itemName;
 	
 	ArrayList<InventoryItem> pocket = new ArrayList<InventoryItem>();
 	//NOTE each object takes one slot. there is NO stacking
@@ -20,11 +25,22 @@ public class WorkPanel extends JPanel {
 	Profile user;
 	
 	public WorkPanel(Profile inUser) {
+		loadItem();
+		
 		keep = new JButton("Keep");
 		discard = new JButton("Discard");
 		goHome = new JButton("Go Home");
+		drop = new JButton("Drop Item");
+		items = new JComboBox<InventoryItem>(pocket.toArray(new InventoryItem[pocket.size()]));
+		itemName = new JLabel(item.getName());
+		
 		user = inUser;
-		this.setVisible(true);
+		add(itemName);
+		add(keep);
+		add(discard);
+		add(goHome);
+		add(items);
+		add(drop);
 	}
 	
 	public void buttonSetupWorkScreen() {
@@ -56,5 +72,11 @@ public class WorkPanel extends JPanel {
 			item = new Artifact(user.getLevel());
 		else 
 			item = new Junk();
+	}
+	public ArrayList<InventoryItem> dump() {
+		for(int i = 0; i < items.getItemCount(); i++) {
+			pocket.add(items.getItemAt(i));
+		}
+		return pocket;
 	}
 }

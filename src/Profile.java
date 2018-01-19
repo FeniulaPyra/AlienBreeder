@@ -88,6 +88,24 @@ public class Profile implements Serializable{
 		}
 		System.out.println(toAdd);
 	}
+	public void add(Artifact toAdd) {
+		if(!artifacts.isEmpty()) {
+			int i;
+			for(i = artifacts.size() - 1; i >= 0 && artifacts.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
+			artifacts.add(i, toAdd);
+		} else {
+			artifacts.add(toAdd);
+		}
+	}
+	public void add(Junk toAdd) {
+		if(!other.isEmpty()) {
+			int i;
+			for(i = other.size() - 1; i >= 0 && other.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
+			other.add(i, toAdd);
+		} else {
+			other.add(toAdd);
+		}
+	}
 	
 	//Adds many things
 	public void addAliens(ArrayList<Alien> toAdd) {
@@ -104,5 +122,33 @@ public class Profile implements Serializable{
 		for(int i = 0; i < toAdd.size(); i++) {
 			other.add(toAdd.get(i));
 		}
+	}
+	public void addMany(ArrayList<InventoryItem> toAdd) {
+		for(int i = 0; i < toAdd.size(); i++) {
+			switch(toAdd.get(i).getClass().getName().charAt(1)) {
+				case 'l':
+					add((Alien)toAdd.get(i));
+					break;
+				case 'r':
+					add((Artifact)toAdd.get(i));
+					break;
+				case 'u':
+					add((Junk)toAdd.get(i));
+					break;
+				default:
+					add((Junk)toAdd.get(i));
+					break;
+			}
+		}
+	}
+	
+	public void checkLevelUp() {
+		if(exp >= Math.pow(level * 10, 2)) {
+			exp = -(int)(Math.pow(level * 10, 2));
+			level++;
+		}
+	}
+	public int getMaxExp() {
+		return (int)Math.pow(level * 10, 2);
 	}
 }

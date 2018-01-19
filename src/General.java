@@ -60,7 +60,7 @@ public abstract class General {
 	 * For example, you may have a Glass Weazo Picture, or a Cardboard Chourov Toy.
 	 */
 	
-	public static final String[] JUNK_TYPES = {"Dirt", "Dead Flower", "Styrafoam cup", "Magical Spoon", "Old Bread", "Unidentifyable Glob", "Rusty Metal"};
+	public static final String[] JUNK_TYPES = {"JFrame", "Dirt", "Dead Flower", "Styrafoam cup", "Magical Spoon", "Old Bread", "Unidentifyable Glob", "Rusty Metal"};
 	
 	//SHOULD loop through the breeds array and add all of the breeds to the breeds table
 	public static final void updateBreedTable(Connection inCon) {
@@ -236,5 +236,8 @@ public abstract class General {
 			t = 0;
 		}
 		System.out.println("Artifact Update Complete.");
+	}
+	public Alien getRandAlien() {
+		return null;
 	}
 }

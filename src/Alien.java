@@ -1,12 +1,10 @@
 import java.util.ArrayList;
 
 public class Alien extends InventoryItem {
-	private String name;
 	private Breed mainBreed; //Head shape
 	private String bColor; //head Color;
 	private String bPattern; //head pattern;
 	private String bPatColor; //head pattern color
-	private int value;
 	private int strength;
 	private int intelligence;
 	
@@ -47,6 +45,7 @@ public class Alien extends InventoryItem {
 	 * @param inLvl the player's level
 	 */
 	public Alien(int inLvl) {
+		//TODO pull the random alien from the database
 		//the indexes bookending the breeds with the same level as the player
 		int startSect;
 		int endSect;

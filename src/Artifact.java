@@ -1,8 +1,6 @@
 
 public class Artifact extends InventoryItem {
-	private String name;
 	private Breed alienType;
-	private int value;
 	private int level;
 	
 	//Creates an Artifact given the alien type, material, and kind of object
@@ -19,5 +17,6 @@ public class Artifact extends InventoryItem {
 	//Creates a random artifact of a given level
 	public Artifact(int level) {
 		//do some sql stuff yaay
+		this(General.BREEDS[1], "Cardboard", "Cup");
 	}
 }

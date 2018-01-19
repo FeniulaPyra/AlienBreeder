@@ -5,6 +5,8 @@ import java.util.*;
 import java.sql.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 //TODO link to sql, move everything from GENERAL into a database. << sorta done
 //TODO for some reason, when breeding, the name of the child is not set to the breeds and colors...
@@ -32,8 +34,8 @@ public class MainGame extends JFrame {
 	private Profile user;
 
 	private JLabel profName;
-	private JLabel coins;
 	private JLabel exp;
+	private JLabel coins;
 	private JLabel level;
 	
 	
@@ -50,18 +52,15 @@ public class MainGame extends JFrame {
 		setLocationRelativeTo(null);
 		this.setContentPane(jTPane);
 		
+		mainPanel.setLayout(new GridLayout(8, 1));
+		
 		/*mainPanel.add(renameButton);
 		mainPanel.add(sellButton);
 		mainPanel.add(breedButton);
 		mainPanel.add(competeButton);*/
 		//mainPanel.add(alienScreenButton);
-		mainPanel.add(questButton);
-		mainPanel.add(groupQButton);
-		mainPanel.add(shopButton);
 		//mainPanel.add(workButton);
-		mainPanel.add(saveButton);
-		mainPanel.add(loadButton);
-
+		
 		//Connection mainCon = sqlSetup();
 		//sqlUpdate(mainCon);
 		
@@ -72,6 +71,21 @@ public class MainGame extends JFrame {
 			user.aliens.add(new Alien(user.getLevel()));
 		}
 		
+		coins = new JLabel("$");
+		level = new JLabel("LVL");
+		exp = new JLabel("EXP");
+		
+		updateValuesUI();
+		
+		mainPanel.add(coins);
+		mainPanel.add(level);
+		mainPanel.add(exp);
+		mainPanel.add(questButton);
+		mainPanel.add(groupQButton);
+		mainPanel.add(shopButton);
+		mainPanel.add(saveButton);
+		mainPanel.add(loadButton);
+
 		aliens = new AlienPanel(user);
 		work = new WorkPanel(user);
 		
@@ -340,13 +354,6 @@ public class MainGame extends JFrame {
 		}
 		return tempUser;
 	}
-	public static void checkLevelUp(Profile inUser) {
-		if(inUser.getExp() >= Math.pow((inUser.getLevel() * 10), 2)) {
-			inUser.setExp(-(int)(Math.pow((inUser.getLevel() * 10), 2)));
-			inUser.setLevel(inUser.getLevel() + 1);
-			System.out.println("You leveled up!");
-		}
-	}
 	public static void WIP() {
 		System.out.println("Coming Soon!");
 	}
@@ -387,6 +394,11 @@ public class MainGame extends JFrame {
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WIP();
+			}
+		});
+		jTPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				user.addMany(work.dump());
 			}
 		});
 	}
@@ -442,5 +454,11 @@ public class MainGame extends JFrame {
 	}
 	public void WIP() {
 		JOptionPane.showConfirmDialog(this, "WIP", "Coming Soon!", JOptionPane.OK_CANCEL_OPTION);
+	}
+	public void updateValuesUI() {
+		user.checkLevelUp();
+		coins.setText("$" + user.getCoins());
+		level.setText("LVL " + user.getLevel());
+		exp.setText("EXP " + user.getExp() + "/" + user.getMaxExp());
 	}
 }
