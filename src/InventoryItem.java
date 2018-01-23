@@ -15,4 +15,7 @@ public abstract class InventoryItem {
 	public int getValue() {
 		return value;
 	}
+	public String toString() {
+		return name;
+	}
 }

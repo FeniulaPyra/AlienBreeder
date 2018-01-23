@@ -1,7 +1,5 @@
 
 public class Junk extends InventoryItem {
-	String name;
-	int value;
 	
 	public Junk(String inName, int inValue) {
 		name = inName;
@@ -10,6 +8,4 @@ public class Junk extends InventoryItem {
 	public Junk() {
 		this(General.JUNK_TYPES[(int)(Math.random() * General.JUNK_TYPES.length)], 0);
 	}
-	
-	
 }

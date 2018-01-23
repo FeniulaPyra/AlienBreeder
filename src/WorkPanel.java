@@ -25,39 +25,51 @@ public class WorkPanel extends JPanel {
 	Profile user;
 	
 	public WorkPanel(Profile inUser) {
-		loadItem();
-		
 		keep = new JButton("Keep");
 		discard = new JButton("Discard");
 		goHome = new JButton("Go Home");
 		drop = new JButton("Drop Item");
 		items = new JComboBox<InventoryItem>(pocket.toArray(new InventoryItem[pocket.size()]));
-		itemName = new JLabel(item.getName());
+		itemName = new JLabel("");
+		
+		setLayout(new GridLayout(7, 1));
 		
 		user = inUser;
 		add(itemName);
 		add(keep);
 		add(discard);
-		add(goHome);
+		add(new JLabel("Pocket:"));
 		add(items);
 		add(drop);
+		add(goHome);
+		
+		buttonSetupWorkScreen();
+		loadItem();
 	}
 	
 	public void buttonSetupWorkScreen() {
 		keep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(pocket.size() <= user.getPocket()) {
+				if(pocket.size() < user.getPocket()) {
 					pocket.add(item);
+					items.addItem(item);
 				}
 				loadItem();
+				
 			}
 		});
 		discard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadItem();
+				//TODO do the thing yay
 			}
 		});
 		goHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		items.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 			}
@@ -68,10 +80,11 @@ public class WorkPanel extends JPanel {
 		int random = (int)(Math.random() * 100);
 		if(random == 0)
 			item = new Alien(user.getLevel());
-		else if(random > 0 && random < 50)
-			item = new Artifact(user.getLevel());
+		else if(random > 0 && random < 25)
+			item = new Artifact(General.BREEDS[1], "Cardboard", "Cup");
 		else 
 			item = new Junk();
+		itemName.setText(item.getName());
 	}
 	public ArrayList<InventoryItem> dump() {
 		for(int i = 0; i < items.getItemCount(); i++) {

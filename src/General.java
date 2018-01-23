@@ -42,15 +42,15 @@ public abstract class General {
 	//public final String[] T_COLORS = {};
 	//public final String[] H_MATERIAL = {};
 	
-	//for breeding aliens with better strength/intel, breeding two aliens with strength/intel that is within 2 units of eachother's strength/intel can result with a child
-	//that has a strength/intel that is 0-2 higher than the alien parent with the lowest strength/intel.
-	//EX) if Alien A has 37 intel, and Alien B has 36 intel, the child could have 36, 37, or 38 intel. if Alien B had 35 intel, the child could have 35, 36, or 37 intel.
-	//The same works for strength
+	/*for breeding aliens with better strength/intel, breeding two aliens with strength/intel that is within 2 units of eachother's strength/intel can result with a child
+	that has a strength/intel that is 0-2 higher than the alien parent with the lowest strength/intel.
+	EX) if Alien A has 37 intel, and Alien B has 36 intel, the child could have 36, 37, or 38 intel. if Alien B had 35 intel, the child could have 35, 36, or 37 intel.
+	The same works for strength
 	
-	//Value = s + i + breed base value
-	//Strength = t +-/*^%!level || random per alien instance (smallest is 10)
-	//intelligence = h +-/*^%!level || random per alien instance (smallest is 10)
-	//exp will be increased by 
+	Value = s + i + breed base value
+	Strength = t +-/*^%!level || random per alien instance (smallest is 10)
+	intelligence = h +-/*^%!level || random per alien instance (smallest is 10)
+	exp will be increased by */
 	
 	
 	public static final String[] ARTIFACT_TYPES = {"", "Totem", "Bowl", "Urn", "Picture", "Tools", "Toy", "Instrument", "Headdress", "Object"}; //10
@@ -237,7 +237,8 @@ public abstract class General {
 		}
 		System.out.println("Artifact Update Complete.");
 	}
-	public Alien getRandAlien() {
+	public static final Alien getRandAlien(Connection inCon, int lvl) {
+		//TODO
 		return null;
 	}
 }
