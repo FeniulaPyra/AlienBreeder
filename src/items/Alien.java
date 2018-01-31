@@ -1,4 +1,6 @@
 package items;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import general.*;
 
@@ -42,11 +44,31 @@ public class Alien extends InventoryItem {
 		this(copyAlien.getBreed(), copyAlien.getBreedColor(), copyAlien.getBreedPattern(), copyAlien.getBreedPatternColor());
 	}
 	
+	public Alien(int inLvl) {
+		//TODO
+		try {
+			ResultSet aliens = General.mainCon.createStatement().executeQuery("SELECT * FROM aliens, breeds where breeds.level = " + inLvl + " AND aliens.breed = breeds.id ORDER BY RANDOM();");
+			for(int i = 0; i < General.BREEDS.length; i++) {
+				if(General.BREEDS[i].getName().equals(aliens.getString("breed"))) {
+					mainBreed = General.BREEDS[i];
+				}
+			}
+			bColor = aliens.getString("base_color");
+			bPattern = aliens.getString("pattern");
+			bPatColor = aliens.getString("pattern_color");
+		}
+		catch(SQLException s) {
+			System.out.println("SQL Exception when creating random alien!");
+		}
+		strength = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
+		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
+	}
+	
 	/**
 	 * Generates a random Alien based off of the player's level
 	 * @param inLvl the player's level
 	 */
-	public Alien(int inLvl) {
+	/*public Alien(int inLvl) {
 		//TODO pull the random alien from the database rather than doing this painfulness
 		//the indexes bookending the breeds with the same level as the player
 		int startSect;
@@ -75,7 +97,7 @@ public class Alien extends InventoryItem {
 		//sets name to breed/etc
 		name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
 	}
-	
+	*/
 	//*~~~SETTERS~~~*\\
 	public void setBreed(Breed inB) {
 		mainBreed = inB;

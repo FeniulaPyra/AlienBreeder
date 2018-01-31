@@ -63,8 +63,8 @@ public class MainGame extends JFrame {
 		//mainPanel.add(alienScreenButton);
 		//mainPanel.add(workButton);
 		
-		//Connection mainCon = sqlSetup();
-		//sqlUpdate(mainCon);
+		//General.sqlSetup();
+		//sqlUpdate(General.mainCon);
 		
 		user = new Profile(); //TODO save/load sequence
 		
@@ -405,50 +405,11 @@ public class MainGame extends JFrame {
 		return (Alien) JOptionPane.showInputDialog(null, "Select an alien: ", function, JOptionPane.QUESTION_MESSAGE, null, alienChoices.toArray(), "Select");
 	}
 	
-	public Connection sqlSetup() {
-		String host = "jdbc:sqlite:C:/SQLite/db/alienGame.db";
-		Connection con;
-		
-		try {
-			 con = DriverManager.getConnection(host);
-			System.out.println("Connection successful.");
-			return con;
-		}
-		catch (SQLException s) {
-			System.out.println("SQL Error! " + s);
-		}
-		catch (Exception e) { //<< Lazy
-			System.out.println("Error! "  + e);
-		}
-		return null;
-	}
+	
 	//TODO probs don't need this either
 	public void  work() {
 	}
-	public void sqlUpdate(Connection inCon) {
-		System.out.println("");
-		try {
-			System.out.println("Beginning breeds update...");
-			General.updateBreedTable(inCon);
-		}
-		catch(Exception e) {
-			System.out.println("Error at breeds update: " + e);
-		}
-		try {
-			System.out.println("Beginning aliens update...");
-			General.updateAlienTable(inCon);
-		}
-		catch(Exception e) {
-			System.out.println("Error at aliens update: " + e);
-		}
-		try {
-			System.out.println("Beginning artifacts update...");
-			General.updateArtifactTable(inCon);
-		}
-		catch(Exception e) {
-			System.out.println("Error at artifacts update: " + e);
-		}
-	}
+	
 	public void WIP() {
 		JOptionPane.showConfirmDialog(this, "WIP", "Coming Soon!", JOptionPane.OK_CANCEL_OPTION);
 	}

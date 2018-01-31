@@ -3,22 +3,12 @@ import java.sql.*;
 //import org.sqlite.*;
 import items.*;
 
-//TODO handwrite through the damn loop stop being lazy
-//TODO but theres like 8 loops
-//TODO well you are stupid too bad
-//TODO but plzno
-//TODO howbout plsyes.
-//TODO but no.
-//TODO or suffer through 8 hours of trying to figure out your stupid loops through trial and error
-//TODO but please.
-//TODO but no.
-//TODO DO THE LOOP
-//TODO WAAAHH T^T
+//TODO maybe you should make this file more readable...
 
 
 //TODO artifacts table screwed up
 //TODO while the breeds start at 0 in the alien table (where Inockei breed = 0), the breeds table starts at 1 (where Inockei = 1). This needs to be fixed
-
+//IDK if i fixed those yet ^^
 
 /*
  * basic storyline: you are a worker on a research/exploration spaceship. Despite the scientific advances, the spaceship can not sort things it finds (dirt, rubble, rare things, aliens)
@@ -26,9 +16,15 @@ import items.*;
  * stuff the spaceship finds. However, you also collect and breed the tiny aliens that the space crew would otherwise discard(ToT) or put through horrible science experiments. However,
  * some of the other workers have also started doing the same thing and will occasionally request certain aliens from you.
  */
-
+	//Base Value Equation = 2.5L^2 + 12.5L + 15
+	//Strength and Intel = 10L + ((rand)L - 2L)
+	//When breeding, Strength/Intel will be the lowest value + 0, 1, or 2
 
 public abstract class General {
+	public static Connection mainCon;
+	//~~TYPES~~\\
+	
+	//Alien Types
 	public static final Breed[] BREEDS = { //15
 			new Breed("Inockei", 1), 
 			new Breed("Lezynii", 2), new Breed("Uhuquas", 2),
@@ -37,34 +33,18 @@ public abstract class General {
 			new Breed("Weazo", 5), new Breed("Jichayrei", 5), new Breed("Leith", 5),
 			new Breed("Pheis", 6), new Breed("Tatoul", 6), new Breed("Ghokeyli", 6),
 			new Breed("Eaquozo", 7)};
-	//Value Equation = 2.5L^2 + 12.5L + 15
 	public static final String[] B_COLORS = {"Black", "White", "Red", "Brown", "Orange", "Yellow", "Green", "Blue", "Violet", "Rose"}; //10
 	public static final String[] B_PATTERNS = {"Tayn", "Zaye", "Yetathi", "Gehour", "Eyloyle", "Ireimo", "Hyiju", "Kaeque", "Aetachi"}; //9
 	public static final String[] B_PAT_COLORS = {"Slate", "Silver", "Salmon", "Chestnut", "Mango", "Gold", "Oceana", "Fuschia", "Magenta"}; //9
-	//public final String[] T_COLORS = {};
-	//public final String[] H_MATERIAL = {};
 	
-	/*for breeding aliens with better strength/intel, breeding two aliens with strength/intel that is within 2 units of eachother's strength/intel can result with a child
-	that has a strength/intel that is 0-2 higher than the alien parent with the lowest strength/intel.
-	EX) if Alien A has 37 intel, and Alien B has 36 intel, the child could have 36, 37, or 38 intel. if Alien B had 35 intel, the child could have 35, 36, or 37 intel.
-	The same works for strength
-	
-	Value = s + i + breed base value
-	Strength = t +-/*^%!level || random per alien instance (smallest is 10)
-	intelligence = h +-/*^%!level || random per alien instance (smallest is 10)
-	exp will be increased by */
-	
-	
+	//Artifact Types:
 	public static final String[] ARTIFACT_TYPES = {"", "Totem", "Bowl", "Urn", "Picture", "Tools", "Toy", "Instrument", "Headdress", "Object"}; //10
 	public static final String[] ARTIFACT_MATERIALS = {"Cardboard", "Glass", "Bronze", "Silver", "Gold", "Crystal"}; //6
-	/* Artifacts:
-	 * These are collectables that can be bought in the shop. The name of an artifact will be in the following form: [Material] [Alien Type] [Artifact Type]
-	 * For example, you may have a Glass Weazo Picture, or a Cardboard Chourov Toy.
-	 */
 	
+	//Junks
 	public static final String[] JUNK_TYPES = {"JFrame", "Dirt", "Dead Flower", "Styrafoam cup", "Magical Spoon", "Old Bread", "Unidentifyable Glob", "Rusty Metal"};
 	
-	//SHOULD loop through the breeds array and add all of the breeds to the breeds table
+	//~~UPDATE DATABASE~~\\
 	public static final void updateBreedTable(Connection inCon) {
 		int lastB = 0;
 		try {
@@ -90,8 +70,6 @@ public abstract class General {
 		}
 		System.out.println("Breed Update Complete.");
 	}
-	
-	//SHOULD loop through the breed value arrays and add all possible combinations of an alien into the aliens table in the databases. Hopefully this doesn't take long.
 	public static final void updateAlienTable(Connection inCon) {
 		//From here to the breeds loop will start the loop at the last alien entry
 		//TODO cleanup
@@ -179,8 +157,6 @@ public abstract class General {
 		b = 0;
 		System.out.println("Alien Update Complete.");
 	}
-	
-	//SHOULD loop through the array of artifact values and add artifacts to the artifact table
 	public static final void updateArtifactTable(Connection inCon) {
 		int lastB = 0;
 		String lastT = "", lastM = "";
@@ -239,6 +215,7 @@ public abstract class General {
 		}
 		System.out.println("Artifact Update Complete.");
 	}
+	
 	public static final Alien getRandAlien(Connection inCon, int lvl) {
 		//TODO
 		return null;
@@ -246,5 +223,46 @@ public abstract class General {
 	public static final Artifact getRandArtifact(Connection inCon, int lvl) {
 		//TODO
 		return null;
+	}
+	
+	public Connection sqlSetup() {
+		String host = "jdbc:sqlite:C:/SQLite/db/alienGame.db";
+		
+		try {
+			mainCon = DriverManager.getConnection(host);
+			System.out.println("Connection successful.");
+			return mainCon;
+		}
+		catch (SQLException s) {
+			System.out.println("SQL Error! " + s);
+		}
+		catch (Exception e) { //<< Lazy
+			System.out.println("Error! "  + e);
+		}
+		return null;
+	}
+	public void sqlUpdate() {
+		System.out.println("");
+		try {
+			System.out.println("Beginning breeds update...");
+			updateBreedTable(mainCon);
+		}
+		catch(Exception e) {
+			System.out.println("Error at breeds update: " + e);
+		}
+		try {
+			System.out.println("Beginning aliens update...");
+			updateAlienTable(mainCon);
+		}
+		catch(Exception e) {
+			System.out.println("Error at aliens update: " + e);
+		}
+		try {
+			System.out.println("Beginning artifacts update...");
+			updateArtifactTable(mainCon);
+		}
+		catch(Exception e) {
+			System.out.println("Error at artifacts update: " + e);
+		}
 	}
 }

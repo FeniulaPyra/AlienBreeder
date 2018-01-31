@@ -24,7 +24,7 @@ public class ShopPanel extends JPanel {
 		inventory.addAll(inUser.other);
 		
 		toSell = new JComboBox<InventoryItem>((InventoryItem[])inventory.toArray());
-		toBuy = General.getRandArtifact(General., lvl);
+		toBuy = new Artifact(inUser.getLevel());
 	}
 	
 	public void shopSetup() {

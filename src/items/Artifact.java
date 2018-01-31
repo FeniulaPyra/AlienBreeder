@@ -1,4 +1,7 @@
 package items;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import general.General;
 
 public class Artifact extends InventoryItem {
@@ -15,5 +18,18 @@ public class Artifact extends InventoryItem {
 		level = inAlien.getLevel();
 		value = inAlien.getBaseVal() + ((i - 1) * 10);
 		name = inAlien.getName() + " " + material + " " + object;
+	}
+	public Artifact(int inLvl) {
+		try {
+			ResultSet arts = General.mainCon.createStatement().executeQuery("SELECT * FROM artifacts, breeds where breeds.level = " + inLvl + " AND artifacts.breed = breeds.id ORDER BY RANDOM();");
+			for(int i = 0; i < General.BREEDS.length; i++) {
+				if(General.BREEDS[i].getName().equals(arts.getString("breed"))) {
+					alienType = General.BREEDS[i];
+				}
+			}
+			name = alienType.getName() + " " + arts.getString("material") + " " + arts.getString("object");
+		} catch (SQLException e) {
+			System.out.println("SQL Exception when getting random artifact!");
+		}
 	}
 }
