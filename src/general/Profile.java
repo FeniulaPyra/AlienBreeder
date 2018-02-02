@@ -85,7 +85,7 @@ public class Profile implements Serializable{
 		if(!aliens.isEmpty()) {
 			int i;
 			for(i = aliens.size() - 1; i >= 0 && aliens.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
-			aliens.add(i, toAdd);
+			aliens.add(i + 1, toAdd);
 		} else {
 			aliens.add(toAdd);
 		}

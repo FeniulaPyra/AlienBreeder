@@ -3,6 +3,7 @@ package panels;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import items.*;
@@ -88,11 +89,20 @@ public class AlienPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				//opens box to select another alien, presents possible offspring to confirm, breeds aliens
 				//es muy dificil!
+				ArrayList<Alien> tempAliens = new ArrayList<Alien>(user.aliens);
+				tempAliens.remove(selection.getSelectedItem());
+				Alien otherAlien = (Alien)JOptionPane.showInputDialog(null, "Pick a second alien:", "Breeding", JOptionPane.PLAIN_MESSAGE, null, tempAliens.toArray(), null);
+				JOptionPane.showInputDialog(null, "Are you sure? these are the possible offspring:", "Breeding Confirm", JOptionPane.PLAIN_MESSAGE, null, ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).toArray(), null);
+				Alien baby = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).get((int)(Math.random() * 16));
+				user.add(baby);
+				JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby.getName());
 			}
 		});
 		compete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO WIP
+				//needs to generate a bunch of other aliens (or just 1) and start competition
+				//idk what the competition will be o dear
 			}
 		});
 		selection.addActionListener(new ActionListener() {

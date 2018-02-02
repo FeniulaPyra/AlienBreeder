@@ -89,7 +89,7 @@ public class WorkPanel extends JPanel {
 		if(random == 0)
 			item = new Alien(user.getLevel());
 		else if(random > 0 && random < 25)
-			item = new Artifact(General.BREEDS[1], "Cardboard", "Cup");
+			item = new Artifact(user.getLevel());
 		else 
 			item = new Junk();
 		itemName.setText(item.getName());
