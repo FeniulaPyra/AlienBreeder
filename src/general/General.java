@@ -1,6 +1,6 @@
 package general;
 import java.sql.*;
-//import org.sqlite.*;
+import org.sqlite.*;
 import items.*;
 
 //TODO maybe you should make this file more readable...
@@ -119,7 +119,7 @@ public abstract class General {
 				i += B_PAT_COLORS.length;
 			}
 		}
-		
+		System.out.println((((b+bc+bp+bpc)/(double)(BREEDS.length * B_COLORS.length * B_PATTERNS.length * B_PAT_COLORS.length)) * 100) + "%");
 		//loops through breeds
 		for(; b < BREEDS.length; b++) {
 			
@@ -136,8 +136,11 @@ public abstract class General {
 						try {
 							//adds the current breed combination to the table
 							inCon.createStatement().executeUpdate("INSERT INTO aliens (pattern, pattern_color, color, breed) VALUES (\"" + B_PATTERNS[bp] + "\", \"" + B_PAT_COLORS[bpc] + "\", \"" + B_COLORS[bc] + "\", " + b + ");");
-							if((b+bc+bp+bpc) % 100 == 0) {
-								System.out.println((((b+bc+bp+bpc)/(double)(BREEDS.length * B_COLORS.length * B_PATTERNS.length * B_PAT_COLORS.length)) * 100) + "%");
+							//if((b+bc+bp+bpc) % 100 == 0) {
+								//System.out.println((((b*bc*bp*bpc) +"/" + (double)(BREEDS.length * B_COLORS.length * B_PATTERNS.length * B_PAT_COLORS.length)) /* 100*/) + "%");
+						//	}
+							if(inCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);").getInt("id") % 100 == 0) {
+							System.out.println(inCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);").getInt("id"));
 							}
 						}
 						catch(SQLException e) {
@@ -225,8 +228,8 @@ public abstract class General {
 		return null;
 	}
 	
-	public Connection sqlSetup() {
-		String host = "jdbc:sqlite:C:/SQLite/db/alienGame.db";
+	public static Connection sqlSetup() {
+		String host = "jdbc:sqlite:C:\\Users\\165760\\eclipse-workspace\\AlienBreeder\\assets\\alienDB.db";
 		
 		try {
 			mainCon = DriverManager.getConnection(host);
@@ -241,7 +244,7 @@ public abstract class General {
 		}
 		return null;
 	}
-	public void sqlUpdate() {
+	public static void sqlUpdate() {
 		System.out.println("");
 		try {
 			System.out.println("Beginning breeds update...");

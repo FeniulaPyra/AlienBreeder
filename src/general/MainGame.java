@@ -33,7 +33,8 @@ public class MainGame extends JFrame {
 	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
 	
-	private Profile user;
+	//TODO used to be private, not sure if that was important, but i changed it to public because i don't like having 8 gazillion Profiles called "user" in all my classes.
+	public Profile user;
 
 	private JLabel profName;
 	private JLabel exp;
@@ -63,8 +64,8 @@ public class MainGame extends JFrame {
 		//mainPanel.add(alienScreenButton);
 		//mainPanel.add(workButton);
 		
-		//General.sqlSetup();
-		//sqlUpdate(General.mainCon);
+		General.sqlSetup();
+		General.sqlUpdate();
 		
 		user = new Profile(); //TODO save/load sequence
 		
