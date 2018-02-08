@@ -45,11 +45,11 @@ public abstract class General {
 	public static final String[] JUNK_TYPES = {"JFrame", "Dirt", "Dead Flower", "Styrafoam cup", "Magical Spoon", "Old Bread", "Unidentifyable Glob", "Rusty Metal"};
 	
 	//~~UPDATE DATABASE~~\\
-	public static final void updateBreedTable(Connection inCon) {
+	public static final void updateBreedTable() {
 		int lastB = 0;
 		try {
 			//Clears the table so there shouldn't be any duplicates
-			ResultSet lastBreed = inCon.createStatement().executeQuery("SELECT * FROM breeds where id = (SELECT MAX(id) FROM breeds);");
+			ResultSet lastBreed = mainCon.createStatement().executeQuery("SELECT * FROM breeds where id = (SELECT MAX(id) FROM breeds);");
 			lastB = lastBreed.getInt("id") + 1;
 		}
 		catch (SQLException e) {
@@ -61,7 +61,7 @@ public abstract class General {
 		for(int b = lastB; b < BREEDS.length; b++) {
 			try {
 				//adds the current breed
-				inCon.createStatement().executeUpdate("INSERT INTO breeds VALUES (" + b + ", \"" + BREEDS[b].getName() + "\", " + BREEDS[b].getLevel() + ", " + BREEDS[b].getBaseVal() + ");");
+				mainCon.createStatement().executeUpdate("INSERT INTO breeds VALUES (" + b + ", \"" + BREEDS[b].getName() + "\", " + BREEDS[b].getLevel() + ", " + BREEDS[b].getBaseVal() + ");");
 			}
 			catch(SQLException e) {
 				//outputs possible errors
@@ -70,7 +70,7 @@ public abstract class General {
 		}
 		System.out.println("Breed Update Complete.");
 	}
-	public static final void updateAlienTable(Connection inCon) {
+	public static final void updateAlienTable() {
 		//From here to the breeds loop will start the loop at the last alien entry
 		//TODO cleanup
 		
@@ -80,7 +80,7 @@ public abstract class General {
 		
 		//gets the last alien entry from the database and separates the values into indiv vars
 		try {
-			ResultSet lastAlien = inCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);");
+			ResultSet lastAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);");
 			lastB = lastAlien.getInt("breed");
 			lastBC = lastAlien.getString("color");
 			lastBP = lastAlien.getString("pattern");
@@ -135,12 +135,12 @@ public abstract class General {
 						//System.out.println("b: " + b + "bc: " + bc + "bp: " + bp + "bpc: " + bpc);
 						try {
 							//adds the current breed combination to the table
-							inCon.createStatement().executeUpdate("INSERT INTO aliens (pattern, pattern_color, color, breed) VALUES (\"" + B_PATTERNS[bp] + "\", \"" + B_PAT_COLORS[bpc] + "\", \"" + B_COLORS[bc] + "\", " + b + ");");
+							mainCon.createStatement().executeUpdate("INSERT INTO aliens (pattern, pattern_color, color, breed) VALUES (\"" + B_PATTERNS[bp] + "\", \"" + B_PAT_COLORS[bpc] + "\", \"" + B_COLORS[bc] + "\", " + b + ");");
 							//if((b+bc+bp+bpc) % 100 == 0) {
 								//System.out.println((((b*bc*bp*bpc) +"/" + (double)(BREEDS.length * B_COLORS.length * B_PATTERNS.length * B_PAT_COLORS.length)) /* 100*/) + "%");
 						//	}
-							if(inCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);").getInt("id") % 100 == 0) {
-							System.out.println(inCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);").getInt("id"));
+							if(mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);").getInt("id") % 100 == 0) {
+							System.out.println(mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);").getInt("id"));
 							}
 						}
 						catch(SQLException e) {
@@ -160,14 +160,14 @@ public abstract class General {
 		b = 0;
 		System.out.println("Alien Update Complete.");
 	}
-	public static final void updateArtifactTable(Connection inCon) {
+	public static final void updateArtifactTable() {
 		int lastB = 0;
 		String lastT = "", lastM = "";
 		int t = 0, b = 0, m = 0;
 		
 		
 		try {
-			ResultSet lastArt = inCon.createStatement().executeQuery("SELECT * FROM artifacts where id = (SELECT MAX(id) FROM artifacts);");
+			ResultSet lastArt = mainCon.createStatement().executeQuery("SELECT * FROM artifacts where id = (SELECT MAX(id) FROM artifacts);");
 			lastB = lastArt.getInt("breed");
 			lastT = lastArt.getString("type");
 			lastM = lastArt.getString("material");
@@ -203,7 +203,7 @@ public abstract class General {
 				for(; m < ARTIFACT_MATERIALS.length; m++) {
 					try {
 						//inserts thing
-						inCon.createStatement().executeUpdate("INSERT INTO artifacts (material, type, breed) VALUES (\"" + ARTIFACT_MATERIALS[m] + "\", \"" + ARTIFACT_TYPES[t] + "\", " + b + ");");
+						mainCon.createStatement().executeUpdate("INSERT INTO artifacts (material, type, breed) VALUES (\"" + ARTIFACT_MATERIALS[m] + "\", \"" + ARTIFACT_TYPES[t] + "\", " + b + ");");
 					}
 					catch(SQLException e) {
 						//outputs errors
@@ -219,13 +219,11 @@ public abstract class General {
 		System.out.println("Artifact Update Complete.");
 	}
 	
-	public static final Alien getRandAlien(Connection inCon, int lvl) {
-		//TODO
-		return null;
+	public static final Alien getRandAlien(int lvl) {
+		return new Alien(getRandomBreed(lvl), getRandomColor(), getRandomPattern(), getRandomPatternColor());
 	}
-	public static final Artifact getRandArtifact(Connection inCon, int lvl) {
-		//TODO
-		return null;
+	public static final Artifact getRandArtifact(int lvl) {
+		return new Artifact(getRandomBreed(lvl), getRandomMaterial(), getRandomObject());
 	}
 	
 	public static Connection sqlSetup() {
@@ -248,24 +246,62 @@ public abstract class General {
 		System.out.println("");
 		try {
 			System.out.println("Beginning breeds update...");
-			updateBreedTable(mainCon);
+			updateBreedTable();
 		}
 		catch(Exception e) {
 			System.out.println("Error at breeds update: " + e);
 		}
 		try {
 			System.out.println("Beginning aliens update...");
-			updateAlienTable(mainCon);
+			updateAlienTable();
 		}
 		catch(Exception e) {
 			System.out.println("Error at aliens update: " + e);
 		}
 		try {
 			System.out.println("Beginning artifacts update...");
-			updateArtifactTable(mainCon);
+			updateArtifactTable();
 		}
 		catch(Exception e) {
 			System.out.println("Error at artifacts update: " + e);
 		}
+	}
+	
+	//Random Alien Stuff
+	public static Breed getRandomBreed(int lvl) {
+		try {
+			ResultSet breeds = mainCon.createStatement().executeQuery("SELECT * FROM breeds WHERE level = " + lvl + " ORDER BY RANDOM() LIMIT 1;");
+			return BREEDS[breeds.getInt("id")];
+		}
+		catch(SQLException s) {
+			System.out.println("SQL Error when getting random breed from database!" + s);
+		}
+		catch(Exception e) {
+			System.out.println("");
+		}
+		return BREEDS[0];
+		
+	}
+	public static String getRandomColor() {
+		return B_COLORS[(int)(Math.random() * B_COLORS.length)];
+	}
+	public static String getRandomPattern() {
+		return B_PATTERNS[(int)(Math.random() * B_PATTERNS.length)];
+	}
+	public static String getRandomPatternColor() {
+		return B_PAT_COLORS[(int)(Math.random() * B_PATTERNS.length)];
+	}
+	
+	//Random Artifact Stuff
+	public static String getRandomObject() {
+		return ARTIFACT_TYPES[(int)(Math.random() * ARTIFACT_TYPES.length)];
+	}
+	public static String getRandomMaterial() {
+		return ARTIFACT_MATERIALS[(int)(Math.random() * ARTIFACT_MATERIALS.length)];
+	}
+	
+	//random junk
+	public static String getRandomJunk() {
+		return JUNK_TYPES[(int)(Math.random() * JUNK_TYPES.length)];
 	}
 }

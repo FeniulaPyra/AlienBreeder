@@ -31,7 +31,13 @@ public class AlienPanel extends JPanel {
 	
 	public Profile user;
 	
+	/**
+	 * Creates a panel for managing aliens, given the user's profile.
+	 * 
+	 * @param inUser This is used for adding/deleting aliens to/from the user's inventory
+	 */
 	public AlienPanel(Profile inUser) {
+		//creates all of the buttons
 		sell = new JButton("Sell");
 		rename = new JButton("Rename");
 		breed = new JButton("Breed");
@@ -41,6 +47,7 @@ public class AlienPanel extends JPanel {
 		intel = new JLabel("Intelligence: ");
 		strength = new JLabel("Strength");
 		
+		//sets to null because i haven't done this yet
 		breedPic = null;
 		picture = null;
 		
@@ -52,6 +59,7 @@ public class AlienPanel extends JPanel {
 		
 		this.setLayout(new GridLayout(9, 1));
 		
+		//adds each component
 		add(selection);
 		add(nameLabel);
 		add(value);
@@ -66,7 +74,10 @@ public class AlienPanel extends JPanel {
 		
 		alienSetup();
 	}
-
+	
+	/**
+	 * Sets up the actionListeners for all of the components in the alien panel
+	 */
 	private void alienSetup() {
 		sell.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -89,13 +100,19 @@ public class AlienPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				//opens box to select another alien, presents possible offspring to confirm, breeds aliens
 				//es muy dificil!
+				//TODO babies don't have names!
+				//TODO messy!
+				//TODO 
 				ArrayList<Alien> tempAliens = new ArrayList<Alien>(user.aliens);
 				tempAliens.remove(selection.getSelectedItem());
 				Alien otherAlien = (Alien)JOptionPane.showInputDialog(null, "Pick a second alien:", "Breeding", JOptionPane.PLAIN_MESSAGE, null, tempAliens.toArray(), null);
 				JOptionPane.showInputDialog(null, "Are you sure? these are the possible offspring:", "Breeding Confirm", JOptionPane.PLAIN_MESSAGE, null, ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).toArray(), null);
-				Alien baby = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).get((int)(Math.random() * 16));
+				ArrayList<Alien> maybeBabies = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien);
+				Alien baby = (maybeBabies.get((int)(Math.random() * maybeBabies.size())));
+				System.out.println("done the breed");
 				user.add(baby);
-				JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby.getName());
+				JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby);
+				updateLabels();
 			}
 		});
 		compete.addActionListener(new ActionListener() {
@@ -114,6 +131,10 @@ public class AlienPanel extends JPanel {
 			}
 		});
 	}
+	/**
+	 * Updates the alien panel labels to show the selected alien's information, as well as have the
+	 * jcombobox show the selected aliens.
+	 */
 	public void updateLabels() {
 		toDisplay = (Alien)selection.getSelectedItem();
 		

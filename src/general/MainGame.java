@@ -18,25 +18,22 @@ import panels.*;
 //TODO COMMENT EVERYTHINGGGG!!!
 //TODO FIX EVERYTHINGGGGGGGG!!!
 
-//TODO use a tabbed pane inside a cardlayout jframe haha fun yay
-
 public class MainGame extends JFrame {
 	
 	public static JPanel mainPanel = new JPanel();
 	public static JTabbedPane jTPane = new JTabbedPane();
 	private static AlienPanel aliens;
 	private static WorkPanel work;
+	private static QuestPanel quests;
+	private static ShopPanel shop;
 	
-	public static JButton questButton = new JButton("Quest"); //does pretty much the same thing as the group quest button
-	public static JButton groupQButton = new JButton("Group Quest");//should come up with a dialog box: lists the quest, has complete, back, and reject quest buttons.
-	public static JButton shopButton = new JButton("Shop"); //opens the shop screen
 	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
 	
 	//TODO used to be private, not sure if that was important, but i changed it to public because i don't like having 8 gazillion Profiles called "user" in all my classes.
 	public Profile user;
 
-	private JLabel profName;
+	private JLabel profName; //TODO will be gotten from sql database of players
 	private JLabel exp;
 	private JLabel coins;
 	private JLabel level;
@@ -55,14 +52,7 @@ public class MainGame extends JFrame {
 		setLocationRelativeTo(null);
 		this.setContentPane(jTPane);
 		
-		mainPanel.setLayout(new GridLayout(8, 1));
-		
-		/*mainPanel.add(renameButton);
-		mainPanel.add(sellButton);
-		mainPanel.add(breedButton);
-		mainPanel.add(competeButton);*/
-		//mainPanel.add(alienScreenButton);
-		//mainPanel.add(workButton);
+		mainPanel.setLayout(new GridLayout(6, 1));
 		
 		General.sqlSetup();
 		General.sqlUpdate();
@@ -83,18 +73,17 @@ public class MainGame extends JFrame {
 		mainPanel.add(coins);
 		mainPanel.add(level);
 		mainPanel.add(exp);
-		mainPanel.add(questButton);
-		mainPanel.add(groupQButton);
-		mainPanel.add(shopButton);
 		mainPanel.add(saveButton);
 		mainPanel.add(loadButton);
 
 		aliens = new AlienPanel(user);
 		work = new WorkPanel(user);
+		quests = new QuestPanel(user);
 		
 		jTPane.addTab("Main", mainPanel);
 		jTPane.addTab("Aliens", aliens);
 		jTPane.addTab("Work", work);
+		jTPane.addTab("Quests", quests);
 	}
 	
 	
@@ -364,26 +353,6 @@ public class MainGame extends JFrame {
 		return (Alien)JOptionPane.showInputDialog(joptionFrame, "SELECT ALIEN", "Choose an alien: ", JOptionPane.QUESTION_MESSAGE, null, inAliens.toArray(), "");
 	}*/
 	public void buttonWatcherMainScreen() {
-		/*alienScreenButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				aliens = new AlienPanel(user);
-			}
-		});*/
-		groupQButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		shopButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		questButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WIP();

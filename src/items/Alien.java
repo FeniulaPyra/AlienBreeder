@@ -44,6 +44,10 @@ public class Alien extends InventoryItem {
 		this(copyAlien.getBreed(), copyAlien.getBreedColor(), copyAlien.getBreedPattern(), copyAlien.getBreedPatternColor());
 	}
 	
+	public Alien(int inLvl) {
+		this(General.getRandAlien(inLvl));
+	}
+	
 	/*public Alien(int inLvl) {
 		//TODO
 		try {
@@ -63,11 +67,11 @@ public class Alien extends InventoryItem {
 		strength = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 	}*/
-	/**
+	/*
 	 * Generates a random Alien based off of the player's level
 	 * @param inLvl the player's level
 	 */
-	public Alien(int inLvl) {
+	/*public Alien(int inLvl) {
 		//TODO pull the random alien from the database rather than doing this painfulness
 		//the indexes bookending the breeds with the same level as the player
 		int startSect;
@@ -84,8 +88,8 @@ public class Alien extends InventoryItem {
 		
 		//sets all of the breed/etc
 		mainBreed = General.BREEDS[randomAlienID];
-		bColor =  General.B_COLORS[(int)(Math.random() * General.B_COLORS.length)];
-		bPattern = General.B_PATTERNS[(int)(Math.random() * General.B_PATTERNS.length)];
+		bColor =  General.getRandomColor();
+		bPattern = General.getRandom;
 		bPatColor = General.B_PAT_COLORS[(int)(Math.random() * General.B_PAT_COLORS.length)];
 		
 		//randomizes numeric values
@@ -96,7 +100,7 @@ public class Alien extends InventoryItem {
 		//sets name to breed/etc
 		name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
 	}
-	
+	*/
 	//*~~~SETTERS~~~*\\
 	public void setBreed(Breed inB) {
 		mainBreed = inB;
