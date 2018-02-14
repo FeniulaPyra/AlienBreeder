@@ -1,6 +1,9 @@
 package panels;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,7 +16,7 @@ import items.Alien;
 
 public class QuestPanel extends JPanel {
 	//The quest descriptions
-	JTextArea singleQuest;
+	JLabel singleQuest;
 	JLabel groupQuest;
 	
 	//The quest completion buttons
@@ -22,6 +25,9 @@ public class QuestPanel extends JPanel {
 	
 	//the alien for the single quest
 	Alien single;
+	String multiValueA; //can be any of the three non-breed values
+	String multiValueB;
+	ArrayList<Alien> multi;
 	
 	//the user
 	Profile user;
@@ -36,7 +42,7 @@ public class QuestPanel extends JPanel {
 		user = inUser;
 		
 		//sets the quests
-		singleQuest = new JTextArea("");
+		singleQuest = new JLabel("");
 		groupQuest = new JLabel("Type: \n");
 		
 		//creates the complete buttons
@@ -44,13 +50,32 @@ public class QuestPanel extends JPanel {
 		completeGroup = new JButton("Complete Group");
 		
 		//sets layout
-		setLayout(new GridLayout(2, 2));
+		setLayout(new GridLayout(4, 1));
 		
 		//adds all of the components
 		add(singleQuest);
 		add(completeSingle);
 		add(groupQuest);
 		add(completeGroup);
+	}
+	public void questSetup() {
+		completeSingle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(user.aliens.contains(single)) {
+					user.addExp(single.getValue() * 2);
+					user.addCoins(single.getValue() * 2);
+					user.aliens.remove(single);
+					single = new Alien(user.getLevel());
+				}
+			}
+		});
+		completeGroup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(user.aliens.containsAll(multi)) {
+					
+				}
+			}
+		});
 	}
 	
 }

@@ -79,11 +79,13 @@ public class MainGame extends JFrame {
 		aliens = new AlienPanel(user);
 		work = new WorkPanel(user);
 		quests = new QuestPanel(user);
+		shop = new ShopPanel(user);
 		
 		jTPane.addTab("Main", mainPanel);
 		jTPane.addTab("Aliens", aliens);
 		jTPane.addTab("Work", work);
 		jTPane.addTab("Quests", quests);
+		jTPane.addTab("Shop", shop);
 	}
 	
 	
