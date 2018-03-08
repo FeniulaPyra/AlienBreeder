@@ -105,12 +105,16 @@ public class AlienPanel extends JPanel {
 				//TODO 
 				ArrayList<Alien> tempAliens = new ArrayList<Alien>(user.aliens);
 				tempAliens.remove(selection.getSelectedItem());
+				
 				Alien otherAlien = (Alien)JOptionPane.showInputDialog(null, "Pick a second alien:", "Breeding", JOptionPane.PLAIN_MESSAGE, null, tempAliens.toArray(), null);
 				JOptionPane.showInputDialog(null, "Are you sure? these are the possible offspring:", "Breeding Confirm", JOptionPane.PLAIN_MESSAGE, null, ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).toArray(), null);
+				
 				ArrayList<Alien> maybeBabies = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien);
+				
 				Alien baby = (maybeBabies.get((int)(Math.random() * maybeBabies.size())));
 				System.out.println("done the breed");
 				user.add(baby);
+				
 				JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby);
 				updateLabels();
 			}
@@ -136,6 +140,10 @@ public class AlienPanel extends JPanel {
 	 * jcombobox show the selected aliens.
 	 */
 	public void updateLabels() {
+		selection.removeAllItems();
+		for(Alien adding : user.aliens) {
+			selection.addItem(adding);
+		}
 		toDisplay = (Alien)selection.getSelectedItem();
 		
 		nameLabel.setText("Name: " + toDisplay.getName());

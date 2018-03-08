@@ -25,7 +25,7 @@ public class MainGame extends JFrame {
 	private static AlienPanel aliens;
 	private static WorkPanel work;
 	private static QuestPanel quests;
-	private static ShopPanel shop;
+	public static ShopPanel shop;
 	
 	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
@@ -86,6 +86,7 @@ public class MainGame extends JFrame {
 		jTPane.addTab("Work", work);
 		jTPane.addTab("Quests", quests);
 		jTPane.addTab("Shop", shop);
+		buttonWatcherMainScreen();
 	}
 	
 	
@@ -367,7 +368,10 @@ public class MainGame extends JFrame {
 		});
 		jTPane.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				user.addMany(work.dump());
+				shop.shopUpdate();
+				shop.updateSellables();
+				aliens.updateLabels();
+				updateValuesUI();
 			}
 		});
 	}

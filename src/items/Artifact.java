@@ -18,6 +18,7 @@ public class Artifact extends InventoryItem {
 		level = inAlien.getLevel();
 		value = inAlien.getBaseVal() + ((i - 1) * 10);
 		name = inAlien.getName() + " " + material + " " + object;
+		itemType = 'r';
 	}
 	/*public Artifact(int inLvl) {
 		try {
@@ -32,6 +33,7 @@ public class Artifact extends InventoryItem {
 			System.out.println("SQL Exception when getting random artifact!");
 		}
 	}*/
+	//TODO make this a this();
 	public Artifact(int inLvl) {
 		int startSect;
 		int endSect;
@@ -45,5 +47,11 @@ public class Artifact extends InventoryItem {
 		//gets the random alien
 		alienType = General.BREEDS[(int)(Math.random() * (endSect - startSect) + startSect)];
 		name = alienType.getName() + " " + General.ARTIFACT_MATERIALS[(int)(Math.random() * General.ARTIFACT_MATERIALS.length)] + " " + General.ARTIFACT_TYPES[(int)(Math.random() * General.ARTIFACT_MATERIALS.length)];
+		itemType = 'r';
+	}
+	
+	//*~~~GETTERS~~~*\\
+	public int getLevel() {
+		return level;
 	}
 }

@@ -2,6 +2,7 @@ package items;
 
 public abstract class InventoryItem {
 	String name;
+	char itemType;
 	int value;
 	
 	public void setName(String inName) {
@@ -12,6 +13,9 @@ public abstract class InventoryItem {
 	}
 	public String getName() {
 		return name;
+	}
+	public char getItemType() {
+		return itemType;
 	}
 	public int getValue() {
 		return value;

@@ -15,11 +15,13 @@ public class Profile implements Serializable{
 	private int id;
 	
 	public Profile() {
-		this(new ArrayList<Alien>(), 0, 1, 100);
+		this(new ArrayList<Alien>(), new ArrayList<Artifact>(), new ArrayList<Junk>(), 0, 1, 100);
 	}
 	
-	public Profile(ArrayList<Alien> inAliens, int inExp, int inLvl, int inCoins) {
+	public Profile(ArrayList<Alien> inAliens, ArrayList<Artifact> inArts, ArrayList<Junk> inJunk, int inExp, int inLvl, int inCoins) {
 		aliens = inAliens;
+		artifacts = inArts;
+		other = inJunk;
 		exp = inExp;
 		level = inLvl;
 		coins = inCoins;
@@ -95,16 +97,26 @@ public class Profile implements Serializable{
 		if(!artifacts.isEmpty()) {
 			int i;
 			for(i = artifacts.size() - 1; i >= 0 && artifacts.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
-			artifacts.add(i, toAdd);
+			if(i < 0) 
+				artifacts.add(toAdd);
+			else 
+				artifacts.add(i, toAdd);
 		} else {
 			artifacts.add(toAdd);
 		}
 	}
 	public void add(Junk toAdd) {
-		if(!other.isEmpty()) {
+		if(other.size() != 0) {
+			System.out.println(other.size());
+			System.out.println(other.get(0));
 			int i;
 			for(i = other.size() - 1; i >= 0 && other.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
-			other.add(i, toAdd);
+			if(i >= 0) {
+				other.add(i, toAdd);
+			}
+			else {
+				other.add(toAdd);
+			}
 		} else {
 			other.add(toAdd);
 		}
@@ -128,20 +140,23 @@ public class Profile implements Serializable{
 	}
 	public void addMany(ArrayList<InventoryItem> toAdd) {
 		for(int i = 0; i < toAdd.size(); i++) {
-			switch(toAdd.get(i).getClass().getName().charAt(1)) {
-				case 'l':
+			switch(toAdd.get(i).getItemType()) {
+				case 'a':
 					add((Alien)toAdd.get(i));
 					break;
 				case 'r':
 					add((Artifact)toAdd.get(i));
 					break;
-				case 'u':
+				case 'j':
 					add((Junk)toAdd.get(i));
 					break;
 				default:
 					add((Junk)toAdd.get(i));
 					break;
 			}
+		}
+		for(int i = 0; i < other.size(); i++) {
+			System.out.println(other.get(i).getName());
 		}
 	}
 	

@@ -17,9 +17,7 @@ public class Alien extends InventoryItem {
 	 * Generates an empty Alien
 	 */
 	public Alien() {
-		name = bColor = bPattern = bPatColor =  "";
-		value = strength = intelligence = 0;
-		mainBreed = null;
+		this(null, "", "", "");
 	}
 	
 	/**
@@ -38,6 +36,7 @@ public class Alien extends InventoryItem {
 		strength = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
 		value = strength + intelligence + mainBreed.getBaseVal();
+		itemType = 'a';
 	}
 	
 	public Alien(Alien copyAlien) {

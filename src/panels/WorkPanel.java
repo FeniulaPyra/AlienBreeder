@@ -91,6 +91,10 @@ public class WorkPanel extends JPanel {
 		goHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO adds all of the current pocket items to the user's inventory.
+				user.addMany(pocket);
+				pocket.removeAll(pocket);
+				items.removeAllItems();
+				MainGame.shop.shopUpdate();
 			}
 		});
 		drop.addActionListener(new ActionListener() {
