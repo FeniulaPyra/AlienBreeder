@@ -61,7 +61,7 @@ public class MainGame extends JFrame {
 		
 		
 		for(int i = 0; i < 4; i++) {
-			user.aliens.add(new Alien(user.getLevel()));
+			user.add(new Alien(user.getLevel()));
 		}
 		
 		coins = new JLabel("$");
@@ -370,7 +370,7 @@ public class MainGame extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				shop.shopUpdate();
 				shop.updateSellables();
-				aliens.updateLabels();
+				//aliens.updateLabels();
 				updateValuesUI();
 			}
 		});

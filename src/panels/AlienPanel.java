@@ -47,15 +47,15 @@ public class AlienPanel extends JPanel {
 		intel = new JLabel("Intelligence: ");
 		strength = new JLabel("Strength");
 		
-		//sets to null because i haven't done this yet
+		//sets to null because i haven't done this yet TODO
 		breedPic = null;
 		picture = null;
 		
 		//populates the combo box with the user's aliens
 		selection = new JComboBox<Alien>(inUser.aliens.toArray(new Alien[inUser.aliens.size()]));
 		//shows the first alien in the user's inventory. 
-		selection.setSelectedItem(null);
-		toDisplay = null;
+		selection.setSelectedItem(0);
+		toDisplay = (Alien)selection.getSelectedItem();
 		
 		this.setLayout(new GridLayout(9, 1));
 		
@@ -73,6 +73,7 @@ public class AlienPanel extends JPanel {
 		user = inUser;
 		
 		alienSetup();
+		updateLabels();
 	}
 	
 	/**
@@ -85,6 +86,7 @@ public class AlienPanel extends JPanel {
 				//if yes...
 				if(JOptionPane.showConfirmDialog(null, "Do you want to sell this" + toDisplay.getName() + "alien?", "Sell Alien", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
 					user.addCoins(toDisplay.getValue());
+					user.aliens.remove(selection.getSelectedItem());
 					selection.removeItemAt(selection.getSelectedIndex());
 				}
 			}
@@ -107,16 +109,16 @@ public class AlienPanel extends JPanel {
 				tempAliens.remove(selection.getSelectedItem());
 				
 				Alien otherAlien = (Alien)JOptionPane.showInputDialog(null, "Pick a second alien:", "Breeding", JOptionPane.PLAIN_MESSAGE, null, tempAliens.toArray(), null);
-				JOptionPane.showInputDialog(null, "Are you sure? these are the possible offspring:", "Breeding Confirm", JOptionPane.PLAIN_MESSAGE, null, ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).toArray(), null);
-				
-				ArrayList<Alien> maybeBabies = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien);
-				
-				Alien baby = (maybeBabies.get((int)(Math.random() * maybeBabies.size())));
-				System.out.println("done the breed");
-				user.add(baby);
-				
-				JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby);
-				updateLabels();
+				if(JOptionPane.showInputDialog(null, "Are you sure? these are the possible offspring:", "Breeding Confirm", JOptionPane.PLAIN_MESSAGE, null, ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).toArray(), null) != null) {
+					ArrayList<Alien> maybeBabies = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien);
+					
+					Alien baby = (maybeBabies.get((int)(Math.random() * maybeBabies.size())));
+					user.add(baby);
+					user.addExp(baby.getValue()/2);
+					
+					JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby);
+					updateComboBox();
+				}
 			}
 		});
 		compete.addActionListener(new ActionListener() {
@@ -128,7 +130,7 @@ public class AlienPanel extends JPanel {
 		});
 		selection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(selection.getSelectedItem() != null) {
+				if(selection.getItemCount() > 0) {
 					//gets the selected item and displays its name and breed
 					updateLabels();
 				}
@@ -139,11 +141,26 @@ public class AlienPanel extends JPanel {
 	 * Updates the alien panel labels to show the selected alien's information, as well as have the
 	 * jcombobox show the selected aliens.
 	 */
-	public void updateLabels() {
+	//TODO there is a weird thing here it adds the aliens twice?
+	public void updateComboBox() {
 		selection.removeAllItems();
 		for(Alien adding : user.aliens) {
 			selection.addItem(adding);
 		}
+	}
+	public void updateLabels() {
+		/*selection.removeAllItems();
+		//TODO what the heck it runs the following 5 lines of code twice, but not the previous one???
+		System.out.println("after deleting");
+		for(int i = 0; i < user.aliens.size(); i++) {
+			selection.addItem(user.aliens.get(i));
+			System.out.println(selection.getItemCount() + "adding one to alien selection" + user.aliens.size());
+		}
+		System.out.println("out");
+		for(Alien adding : user.aliens) {
+			selection.addItem(adding);
+			System.out.println("adding one to alien selection");
+		}*/
 		toDisplay = (Alien)selection.getSelectedItem();
 		
 		nameLabel.setText("Name: " + toDisplay.getName());

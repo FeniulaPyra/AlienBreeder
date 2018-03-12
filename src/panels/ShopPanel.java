@@ -11,13 +11,14 @@ import general.General;
 import general.Profile;
 import items.Artifact;
 import items.InventoryItem;
+import items.Alien;
 
 public class ShopPanel extends JPanel {
 	//The items the user can sell
 	JComboBox<InventoryItem> toSell;
 	
 	//the artifact the user can buy
-	Artifact toBuy;
+	InventoryItem toBuy;
 	
 	JLabel buyInfo;
 	JLabel sellInfo;
@@ -63,12 +64,29 @@ public class ShopPanel extends JPanel {
 	public void shopSetup() {
 		buy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				toSell.addItem(toBuy);
-				user.add(toBuy);
-				user.addCoins(toBuy.getValue() * -2);
-				toBuy = new Artifact(user.getLevel());
-				shopUpdate();
-				updateSellables();
+				if(user.getCoins() - (toBuy.getValue() * 2) >= 0) {
+					toSell.addItem(toBuy);
+					
+					if(toBuy.getClass().toString() == "Alien")
+						user.add((Alien)toBuy);
+					else if(toBuy.getClass().toString() == "Artifact")
+						user.add((Artifact)toBuy);
+					
+					user.addCoins(toBuy.getValue() * -2);
+					switch((int)(Math.random() * 3)) {
+						case 0:
+							toBuy = new Alien(user.getLevel());
+							break;
+						default:
+							toBuy = new Artifact(user.getLevel());
+					}
+						
+					shopUpdate();
+					updateSellables();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "You need more coins! Go to work or sell some aliens!");
+				}
 			}
 		});
 		sell.addActionListener(new ActionListener() {
@@ -92,7 +110,7 @@ public class ShopPanel extends JPanel {
 					shopUpdate();
 					updateSellables();
 				}
-			}
+			} 
 		});
 		toSell.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -110,6 +128,7 @@ public class ShopPanel extends JPanel {
 		}
 	}
 	public void updateSellables() {
+		toSell.removeAllItems();
 		try {
 			for(InventoryItem art : user.artifacts) {
 				toSell.addItem(art);

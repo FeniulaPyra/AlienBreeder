@@ -43,11 +43,13 @@ public class Artifact extends InventoryItem {
 		
 		//finds the end section
 		for(endSect = General.BREEDS.length; endSect > startSect && General.BREEDS[endSect - 1].getLevel() != inLvl; endSect--) {}
-		
+
 		//gets the random alien
 		alienType = General.BREEDS[(int)(Math.random() * (endSect - startSect) + startSect)];
 		name = alienType.getName() + " " + General.ARTIFACT_MATERIALS[(int)(Math.random() * General.ARTIFACT_MATERIALS.length)] + " " + General.ARTIFACT_TYPES[(int)(Math.random() * General.ARTIFACT_MATERIALS.length)];
 		itemType = 'r';
+		level = inLvl;
+		value = alienType.getBaseVal() + (( - 1) * 10);
 	}
 	
 	//*~~~GETTERS~~~*\\

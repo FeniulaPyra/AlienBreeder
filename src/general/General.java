@@ -119,7 +119,6 @@ public abstract class General {
 				i += B_PAT_COLORS.length;
 			}
 		}
-		System.out.println((((b+bc+bp+bpc)/(double)(BREEDS.length * B_COLORS.length * B_PATTERNS.length * B_PAT_COLORS.length)) * 100) + "%");
 		//loops through breeds
 		for(; b < BREEDS.length; b++) {
 			

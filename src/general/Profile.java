@@ -91,7 +91,6 @@ public class Profile implements Serializable{
 		} else {
 			aliens.add(toAdd);
 		}
-		System.out.println(toAdd);
 	}
 	public void add(Artifact toAdd) {
 		if(!artifacts.isEmpty()) {
@@ -162,7 +161,7 @@ public class Profile implements Serializable{
 	
 	public void checkLevelUp() {
 		if(exp >= Math.pow(level * 10, 2)) {
-			exp = -(int)(Math.pow(level * 10, 2));
+			exp -= (int)(Math.pow(level * 10, 2));
 			level++;
 		}
 	}
