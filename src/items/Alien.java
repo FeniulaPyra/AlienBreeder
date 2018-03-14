@@ -189,7 +189,7 @@ public class Alien extends InventoryItem {
 				toAdd.setBreedPatternColor(mate.getBreedPatternColor());
 			}
 			
-			name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
+			toAdd.name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
 			
 			//checks to make sure the program doesn't show the same possible child twice.
 			for(int q = 0; q < offspring.size(); q++) {
