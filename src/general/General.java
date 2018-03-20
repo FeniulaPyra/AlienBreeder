@@ -44,8 +44,29 @@ public abstract class General {
 	//Junks
 	public static final String[] JUNK_TYPES = {"JFrame", "Dirt", "Dead Flower", "Styrafoam cup", "Magical Spoon", "Old Bread", "Unidentifyable Glob", "Rusty Metal"};
 	
-	//~~UPDATE DATABASE~~\\
+	//~~DATABASE STATUS~~\\
+	public static final int getAlienSize() {
+		try {
+			return (mainCon.createStatement().executeQuery("SELECT MAX(id) FROM aliens;")).getInt("id") + 1;
+		}
+		catch(SQLException s) {
+			System.out.println("Couldn't get largest alien id\n" + s);
+		}
+		return 0;
+	}
+	public final int getArtifactSize() {
+		try {
+			return (mainCon.createStatement().executeQuery("SELECT MAX(id) FROM artifacts;")).getInt("id") + 1;
+		}
+		catch(SQLException s) {
+			System.out.println("Couldn't get largest artifact id\n" + s);
+		}
+		return 0;
+	}
+	
+	//~~UPDATE DATABASE~~\\ 
 	public static final void updateBreedTable() {
+		//TODO reupdate the table, because the basevals of all the breeds is wrong.
 		int lastB = 0;
 		try {
 			//Clears the table so there shouldn't be any duplicates
@@ -134,7 +155,7 @@ public abstract class General {
 						//System.out.println("b: " + b + "bc: " + bc + "bp: " + bp + "bpc: " + bpc);
 						try {
 							//adds the current breed combination to the table
-							mainCon.createStatement().executeUpdate("INSERT INTO aliens (pattern, pattern_color, color, breed) VALUES (\"" + B_PATTERNS[bp] + "\", \"" + B_PAT_COLORS[bpc] + "\", \"" + B_COLORS[bc] + "\", " + b + ");");
+							mainCon.createStatement().executeUpdate("INSERT INTO aliens (pattern, pattern_color, color, breed, has) VALUES (\"" + B_PATTERNS[bp] + "\", \"" + B_PAT_COLORS[bpc] + "\", \"" + B_COLORS[bc] + "\", " + b + ", 0);");
 							//if((b+bc+bp+bpc) % 100 == 0) {
 								//System.out.println((((b*bc*bp*bpc) +"/" + (double)(BREEDS.length * B_COLORS.length * B_PATTERNS.length * B_PAT_COLORS.length)) /* 100*/) + "%");
 						//	}
@@ -202,7 +223,7 @@ public abstract class General {
 				for(; m < ARTIFACT_MATERIALS.length; m++) {
 					try {
 						//inserts thing
-						mainCon.createStatement().executeUpdate("INSERT INTO artifacts (material, type, breed) VALUES (\"" + ARTIFACT_MATERIALS[m] + "\", \"" + ARTIFACT_TYPES[t] + "\", " + b + ");");
+						mainCon.createStatement().executeUpdate("INSERT INTO artifacts (material, type, breed, has) VALUES (\"" + ARTIFACT_MATERIALS[m] + "\", \"" + ARTIFACT_TYPES[t] + "\", " + b + ", 0);");
 					}
 					catch(SQLException e) {
 						//outputs errors
@@ -266,6 +287,29 @@ public abstract class General {
 		}
 	}
 	
+	//~~GET STUFF~~\\ 
+	public static Alien getAlien(int ID) {
+		try {
+			ResultSet dbAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";");
+			return new Alien(BREEDS[dbAlien.getInt("breed")], dbAlien.getString("color"), dbAlien.getString("pattern"), dbAlien.getString("pattern_color"));
+		}
+		catch(SQLException s) {
+			System.out.println("sqlexception when getting an alien from an id\n" + s);
+		}
+		return null;
+	}
+	public static Artifact getArt(int ID) {
+		try {
+			ResultSet dbArtifact = mainCon.createStatement().executeQuery("SELECT * FROM artifacts WHERE id = " + ID + ";");
+			return new Artifact(BREEDS[dbArtifact.getInt("breed")], dbArtifact.getString("material"), dbArtifact.getString("type"));
+		}
+		catch(SQLException s) {
+			System.out.println("sqlexception when getting an artfact from its id\n" + s);
+		}
+		return null;
+	}
+	
+	//~~RANDOM STUFF~~\\
 	//Random Alien Stuff
 	public static Breed getRandomBreed(int lvl) {
 		try {
@@ -302,5 +346,115 @@ public abstract class General {
 	//random junk
 	public static String getRandomJunk() {
 		return JUNK_TYPES[(int)(Math.random() * JUNK_TYPES.length)];
+	}
+
+	//~~ACHIEVEMENT STUFF~~\\
+	
+	public static void achieve(Alien achieved) {
+		String name = achieved.getName();
+		String color;
+		String pattern;
+		String patternColor;
+		int breedID;
+		
+		color = name.substring(0, name.indexOf(' '));
+		name = name.substring(name.indexOf(' ') + 1,  name.lastIndexOf(' '));
+		
+		pattern = name.substring(0, name.indexOf(' '));
+		name = name.substring(name.indexOf(' ') + 1, name.length());
+		
+		patternColor = name.substring(name.indexOf(' ') + 1, name.length());
+		
+		try {
+			ResultSet breed = mainCon.createStatement().executeQuery("SELECT * FROM breeds WHERE name = \"" + achieved.getBreed().getName() + "\";");
+			breedID = breed.getInt("id");
+		}
+		catch(SQLException s) {
+			System.out.println("error in finding an alien's breed!\n" + s);
+			return;
+		}
+		
+		try {
+			mainCon.createStatement().executeUpdate("UPDATE aliens SET has = 1 WHERE breed = " + breedID + " AND color = \"" + color + "\" AND pattern = \"" + pattern + "\" AND pattern_color = \"" + patternColor + "\";");
+		}
+		catch(SQLException s) {
+			System.out.println("error when achieving alien!\n" + s);
+			return;
+		}
+		
+	}
+	public static void achieve(Artifact achieved) {
+		String name = achieved.getName();
+		String material;
+		String object;
+		int breedID;
+		
+		material = name.substring(name.indexOf(' ') + 1, name.lastIndexOf(' '));
+		object = name.substring(name.lastIndexOf(' ') + 1);
+		
+		try {
+			ResultSet breed = mainCon.createStatement().executeQuery("SELECT * FROM breeds WHERE name = \"" + achieved.getBreed().getName() + "\";");
+			breedID = breed.getInt("id");
+		}
+		catch(SQLException s) {
+			System.out.println("error in finding an artifact breed!\n" + s);
+			return;
+		}
+		
+		try {
+			mainCon.createStatement().executeUpdate("UPDATE artifacts SET has  = 1 WHERE breed = " + breedID + " AND material = \"" + material + "\" AND type = \"" + object + "\";");
+		}
+		catch(SQLException s) {
+			System.out.println("error when achieving artifact!\n" + s);
+		}
+	}
+	public static void resetArtifacts() {
+		try {
+			mainCon.createStatement().executeUpdate("UPDATE artifacts SET has = 0;");
+		}
+		catch(SQLException s) {
+			System.out.println("Error when resetting artifacts achievements!\n" + s);
+		}
+	}
+	public static void resetAliens() {
+		try {
+			mainCon.createStatement().executeUpdate("UPDATE aliens SET has = 0;");
+		}
+		catch(SQLException s) {
+			System.out.println("Error when resetting alien achievements!\n" + s);
+		}
+	}
+	public static void resetAll() {
+		resetArtifacts();
+		resetAliens();
+	}
+	public static boolean haveAlien(Alien inAlien) {
+		try {
+			ResultSet dbAlien = mainCon.createStatement().executeQuery("SELECT aliens.has FROM aliens LEFT OUTER JOIN breeds ON breeds.id = aliens.breed WHERE pattern = " + inAlien.getBreedPattern() + " AND pattern_color = " + inAlien.getBreedPatternColor() + " AND color = " + inAlien.getBreedColor() + " AND breed.name = " + inAlien.getBreed().getName() + ";");
+			return dbAlien.getInt("has") == 1;
+		}
+		catch(SQLException e) {
+			System.out.println("Sql exception when checking if an alien has been achieved.\n" + e);
+		}
+		return false;
+	}
+	public static boolean haveArtifact(Artifact inArt) {
+		try {
+			ResultSet dbArt = mainCon.createStatement().executeQuery("SELECT artifacts.has FROM aliens LEFT OUTER JOIN breeds ON breeds.id = artifacts.breed WHERE material = " + inArt.getMaterial() + " AND type = " + inArt.getObject() + " AND breed.name = " + inArt.getBreed().getName() + ";");
+			return dbArt.getInt("has") == 1;
+		}
+		catch(SQLException e) {
+			System.out.println("Sql exception when checking if an alien has been achieved.\n" + e);
+		}
+		return false;
+	}
+	
+	//~~OTHER~~\\
+	public static int countChar(String str, char toFind) {
+		int num = 0;
+		for(int i = 0; i < str.length(); i++) {
+			if(str.charAt(i) == toFind) num++;
+		}
+		return num;
 	}
 }

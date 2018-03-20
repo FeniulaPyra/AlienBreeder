@@ -26,6 +26,7 @@ public class MainGame extends JFrame {
 	private static WorkPanel work;
 	private static QuestPanel quests;
 	public static ShopPanel shop;
+	public static CollectionPanel collection;
 	
 	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
@@ -57,6 +58,7 @@ public class MainGame extends JFrame {
 		General.sqlSetup();
 		General.sqlUpdate();
 		
+		
 		user = new Profile(); //TODO save/load sequence
 		
 		
@@ -80,12 +82,14 @@ public class MainGame extends JFrame {
 		work = new WorkPanel(user);
 		quests = new QuestPanel(user);
 		shop = new ShopPanel(user);
+		collection = new CollectionPanel(user);
 		
 		jTPane.addTab("Main", mainPanel);
 		jTPane.addTab("Aliens", aliens);
 		jTPane.addTab("Work", work);
 		jTPane.addTab("Quests", quests);
 		jTPane.addTab("Shop", shop);
+		jTPane.addTab("Collection", collection);
 		buttonWatcherMainScreen();
 	}
 	
@@ -358,7 +362,9 @@ public class MainGame extends JFrame {
 	public void buttonWatcherMainScreen() {
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				WIP();
+				General.achieve(user.aliens.get(0));
+				General.achieve(General.getRandArtifact(user.getLevel()));
+				//WIP();
 			}
 		});
 		loadButton.addActionListener(new ActionListener() {

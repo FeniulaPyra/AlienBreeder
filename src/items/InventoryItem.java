@@ -2,6 +2,7 @@ package items;
 
 public abstract class InventoryItem {
 	String name;
+	//TODO switch to an enum?
 	char itemType;
 	int value;
 	
