@@ -68,12 +68,19 @@ public class CollectionPanel extends JPanel{
 		
 		add(buttonPanel);
 		add(listPanel);
+		collectionSetup();
 	}
 	
 	public void collectionSetup() {
 		showAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
+				
+				int size = General.getAlienSize();
+				
+				for(int i = 0; i < size; i++) {
+					achievementList.addElement(General.getAlien(i));
+				}
 				
 				achievements.setModel(achievementList);
 			}
@@ -82,6 +89,12 @@ public class CollectionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
 				
+				for(int i = 0; i < General.getAlienSize(); i++) {
+					if(General.haveAlien(i)) {
+						achievementList.addElement(General.getAlien(i));
+					}
+				}
+				
 				achievements.setModel(achievementList);
 			}
 		});
@@ -89,12 +102,22 @@ public class CollectionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
 				
+				for(int i = 0; i < General.getArtifactSize(); i++) {
+					achievementList.addElement(General.getArt(i));
+				}
+				
 				achievements.setModel(achievementList);
 			}
 		});
 		showMyArts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
+				
+				for(int i = 0; i < General.getArtifactSize(); i++) {
+					if(General.haveArtifact(i)) {
+						achievementList.addElement(General.getArt(i));
+					}
+				}
 				
 				achievements.setModel(achievementList);
 			}

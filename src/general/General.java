@@ -47,17 +47,18 @@ public abstract class General {
 	//~~DATABASE STATUS~~\\
 	public static final int getAlienSize() {
 		try {
-			return (mainCon.createStatement().executeQuery("SELECT MAX(id) FROM aliens;")).getInt("id") + 1;
+			ResultSet size = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = (SELECT MAX(id) FROM aliens);");
+			return (size).getInt("id") + 1;
 		}
 		catch(SQLException s) {
 			System.out.println("Couldn't get largest alien id\n" + s);
 		}
 		return 0;
 	}
-	public final int getArtifactSize() {
+	public static final int getArtifactSize() {
 		try {
-			return (mainCon.createStatement().executeQuery("SELECT MAX(id) FROM artifacts;")).getInt("id") + 1;
-		}
+			return (mainCon.createStatement().executeQuery("SELECT * FROM artifacts WHERE id = (SELECT MAX(id) FROM artifacts);")).getInt("id") + 1;
+		} 
 		catch(SQLException s) {
 			System.out.println("Couldn't get largest artifact id\n" + s);
 		}
@@ -288,13 +289,20 @@ public abstract class General {
 	}
 	
 	//~~GET STUFF~~\\ 
+	//TODO FIXME
 	public static Alien getAlien(int ID) {
 		try {
-			ResultSet dbAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";");
-			return new Alien(BREEDS[dbAlien.getInt("breed")], dbAlien.getString("color"), dbAlien.getString("pattern"), dbAlien.getString("pattern_color"));
+			//ResultSet dbAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";");
+			Breed breed = BREEDS[mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getInt("breed")];
+			String color = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getString("color");
+			String pattern = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getString("pattern");
+			String patCol = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getString("pattern_color");
+			
+			return new Alien(breed, color, pattern, patCol);//BREEDS[dbAlien.getInt("breed")], dbAlien.getString("color"), dbAlien.getString("pattern"), dbAlien.getString("pattern_color"));
 		}
 		catch(SQLException s) {
-			System.out.println("sqlexception when getting an alien from an id\n" + s);
+			System.out.println("sqlexception when getting an alien from an id\n");
+			s.printStackTrace();
 		}
 		return null;
 	}
@@ -438,6 +446,9 @@ public abstract class General {
 		}
 		return false;
 	}
+	public static boolean haveAlien(int id) {
+		return haveAlien(getAlien(id));
+	}
 	public static boolean haveArtifact(Artifact inArt) {
 		try {
 			ResultSet dbArt = mainCon.createStatement().executeQuery("SELECT artifacts.has FROM aliens LEFT OUTER JOIN breeds ON breeds.id = artifacts.breed WHERE material = " + inArt.getMaterial() + " AND type = " + inArt.getObject() + " AND breed.name = " + inArt.getBreed().getName() + ";");
@@ -447,6 +458,9 @@ public abstract class General {
 			System.out.println("Sql exception when checking if an alien has been achieved.\n" + e);
 		}
 		return false;
+	}
+	public static boolean haveArtifact(int id) {
+		return haveArtifact(getArt(id));
 	}
 	
 	//~~OTHER~~\\

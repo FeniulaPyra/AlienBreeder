@@ -65,7 +65,7 @@ public class MainGame extends JFrame {
 		for(int i = 0; i < 4; i++) {
 			user.add(new Alien(user.getLevel()));
 		}
-		
+				
 		coins = new JLabel("$");
 		level = new JLabel("LVL");
 		exp = new JLabel("EXP");
