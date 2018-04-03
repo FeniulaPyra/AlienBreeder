@@ -65,6 +65,9 @@ public class CollectionPanel extends JPanel{
 		buttonPanel.add(showMyArts);
 		
 		user = inUser;
+		
+		add(buttonPanel);
+		add(listPanel);
 	}
 	
 	public void collectionSetup() {
