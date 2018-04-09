@@ -1,5 +1,7 @@
 package general;
 import java.sql.*;
+import java.util.ArrayList;
+
 import org.sqlite.*;
 import items.*;
 
@@ -95,6 +97,14 @@ public abstract class General {
 	public static final void updateAlienTable() {
 		//From here to the breeds loop will start the loop at the last alien entry
 		//TODO cleanup
+		
+		try {
+			mainCon.createStatement().executeUpdate("UPDATE aliens SET has = 0;");
+		}
+		catch(SQLException s) {
+			System.out.println("Can't reset achievements: ");
+			s.printStackTrace();
+		}
 		
 		int b = 0, bc = 0, bp = 0, bpc = 0, lastB = 0;
 		String lastBC = "", lastBP = "", lastBPC = "";
@@ -316,6 +326,46 @@ public abstract class General {
 		}
 		return null;
 	}
+	public static String getAlienColor(int ID) {
+		try {
+			return mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getString("color");
+		}
+		catch(SQLException s) {
+			System.out.println("Can't get alien color: ");
+			s.printStackTrace();
+		}
+		return null;
+	}
+	public static String getAlienPattern(int ID) {
+		try {
+			return mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getString("pattern");
+		}
+		catch(SQLException s) {
+			System.out.println("Can't get alien pattern: ");
+			s.printStackTrace();
+		}
+		return null;
+	}
+	public static String getAlienPatternColor(int ID) {
+		try {
+			return mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getString("pattern_color");
+		}
+		catch(SQLException s) {
+			System.out.println("Cant' get alien pattern color: ");
+			s.printStackTrace();
+		}
+		return null;
+	}
+	public static Breed getAlienBreed(int ID) {
+		try {
+			return BREEDS[mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE id = " + ID + ";").getInt("breed")];
+		}
+		catch(SQLException s) {
+			System.out.println("Can't get alien breed: ");
+			s.printStackTrace();
+		}
+		return null;
+	}
 	
 	//~~RANDOM STUFF~~\\
 	//Random Alien Stuff
@@ -368,10 +418,10 @@ public abstract class General {
 		color = name.substring(0, name.indexOf(' '));
 		name = name.substring(name.indexOf(' ') + 1,  name.lastIndexOf(' '));
 		
-		pattern = name.substring(0, name.indexOf(' '));
+		patternColor = name.substring(0, name.indexOf(' '));
 		name = name.substring(name.indexOf(' ') + 1, name.length());
 		
-		patternColor = name.substring(name.indexOf(' ') + 1, name.length());
+		pattern = name.substring(name.indexOf(' ') + 1, name.length());
 		
 		try {
 			ResultSet breed = mainCon.createStatement().executeQuery("SELECT * FROM breeds WHERE name = \"" + achieved.getBreed().getName() + "\";");
@@ -462,6 +512,23 @@ public abstract class General {
 	public static boolean haveArtifact(int id) {
 		return haveArtifact(getArt(id));
 	}
+	public static ArrayList<Alien> getAllAliens(boolean achieved) {
+		ArrayList<Alien> gotten = new ArrayList<Alien>();
+		try {
+			ResultSet aliens = mainCon.createStatement().executeQuery("SELECT * FROM aliens;");
+			do {
+				if((achieved && aliens.getInt("has") == 1) || !achieved) {
+					gotten.add(new Alien(BREEDS[aliens.getInt("breed")], aliens.getString("color"), aliens.getString("pattern"), aliens.getString("pattern_color")));
+				}
+			}while(aliens.next());
+		}
+		catch(SQLException s) {
+			System.out.println("Can't get gotten aliens: ");
+			s.printStackTrace();
+		}
+		return gotten;
+	}
+	
 	
 	//~~OTHER~~\\
 	public static int countChar(String str, char toFind) {

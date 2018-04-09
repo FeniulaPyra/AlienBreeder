@@ -91,6 +91,7 @@ public class Profile implements Serializable{
 		} else {
 			aliens.add(toAdd);
 		}
+		General.achieve(toAdd);
 	}
 	public void add(Artifact toAdd) {
 		if(!artifacts.isEmpty()) {
@@ -103,6 +104,7 @@ public class Profile implements Serializable{
 		} else {
 			artifacts.add(toAdd);
 		}
+		General.achieve(toAdd);
 	}
 	public void add(Junk toAdd) {
 		if(other.size() != 0) {

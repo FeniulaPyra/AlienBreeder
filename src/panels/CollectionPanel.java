@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -50,7 +51,7 @@ public class CollectionPanel extends JPanel{
 		achievementList = new DefaultListModel<InventoryItem>();
 
 		achievements = new JList<InventoryItem>();
-		achievements.setCellRenderer(new CollectionCellRenderer());
+		//achievements.setCellRenderer(new CollectionCellRenderer());
 		achievements.setModel(achievementList);
 		
 		this.setLayout(new GridLayout(1, 2));
@@ -75,11 +76,10 @@ public class CollectionPanel extends JPanel{
 		showAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
+				ArrayList<Alien> allAliens = General.getAllAliens(false);
 				
-				int size = General.getAlienSize();
-				
-				for(int i = 0; i < size; i++) {
-					achievementList.addElement(General.getAlien(i));
+				for(int i = 0; i < allAliens.size(); i++) {
+					achievementList.addElement(allAliens.get(i));
 				}
 				
 				achievements.setModel(achievementList);
@@ -88,11 +88,10 @@ public class CollectionPanel extends JPanel{
 		showMyAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
+				ArrayList<Alien> gotten = General.getAllAliens(true);
 				
-				for(int i = 0; i < General.getAlienSize(); i++) {
-					if(General.haveAlien(i)) {
-						achievementList.addElement(General.getAlien(i));
-					}
+				for(int i = 0; i < gotten.size(); i++) {
+					achievementList.addElement(gotten.get(i));
 				}
 				
 				achievements.setModel(achievementList);
