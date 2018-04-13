@@ -488,7 +488,7 @@ public abstract class General {
 	}
 	public static boolean haveAlien(Alien inAlien) {
 		try {
-			ResultSet dbAlien = mainCon.createStatement().executeQuery("SELECT aliens.has FROM aliens LEFT OUTER JOIN breeds ON breeds.id = aliens.breed WHERE pattern = " + inAlien.getBreedPattern() + " AND pattern_color = " + inAlien.getBreedPatternColor() + " AND color = " + inAlien.getBreedColor() + " AND breed.name = " + inAlien.getBreed().getName() + ";");
+			ResultSet dbAlien = mainCon.createStatement().executeQuery("SELECT aliens.has FROM aliens LEFT OUTER JOIN breeds ON breeds.id = aliens.breed WHERE pattern = \"" + inAlien.getBreedPattern() + "\" AND pattern_color = \"" + inAlien.getBreedPatternColor() + "\" AND color = \"" + inAlien.getBreedColor() + "\" AND breeds.name = \"" + inAlien.getBreed().getName() + "\";");
 			return dbAlien.getInt("has") == 1;
 		}
 		catch(SQLException e) {

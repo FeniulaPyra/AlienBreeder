@@ -31,10 +31,9 @@ public class MainGame extends JFrame {
 	public static JButton saveButton = new JButton("Save"); //o joy
 	public static JButton loadButton = new JButton("Load");
 	
-	//TODO used to be private, not sure if that was important, but i changed it to public because i don't like having 8 gazillion Profiles called "user" in all my classes.
-	public Profile user;
+	private Profile user;
 
-	private JLabel profName; //TODO will be gotten from sql database of players
+	private JLabel profName;
 	private JLabel exp;
 	private JLabel coins;
 	private JLabel level;

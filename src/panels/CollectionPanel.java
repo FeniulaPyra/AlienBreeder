@@ -12,9 +12,11 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ScrollPaneLayout;
 
@@ -41,7 +43,7 @@ public class CollectionPanel extends JPanel{
 	public CollectionPanel(Profile inUser) {
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-		listPanel = new JScrollPane();
+		
 		
 		showArts = new JButton("Artifacts");
 		showMyArts = new JButton("My artifacts");
@@ -50,16 +52,16 @@ public class CollectionPanel extends JPanel{
 		
 		achievementList = new DefaultListModel<InventoryItem>();
 
-		achievements = new JList<InventoryItem>();
-		//achievements.setCellRenderer(new CollectionCellRenderer());
-		achievements.setModel(achievementList);
+		achievements = new JList<InventoryItem>(achievementList);
+		achievements.setCellRenderer(new CollectionCellRenderer());
+		//achievements.setModel(achievementList);
+		listPanel = new JScrollPane(achievements);
 		
 		this.setLayout(new GridLayout(1, 2));
 		this.add(listPanel);
 		this.add(buttonPanel);
 		
-		listPanel.add(achievements);
-		
+		//listPanel.add(achievements);
 		buttonPanel.add(showAliens);
 		buttonPanel.add(showMyAliens);
 		buttonPanel.add(showArts);
@@ -75,26 +77,31 @@ public class CollectionPanel extends JPanel{
 	public void collectionSetup() {
 		showAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				showAliens.setText("Loading...");
+				
 				achievementList.removeAllElements();
+				
 				ArrayList<Alien> allAliens = General.getAllAliens(false);
 				
 				for(int i = 0; i < allAliens.size(); i++) {
 					achievementList.addElement(allAliens.get(i));
-				}
-				
-				achievements.setModel(achievementList);
+				}				
+				showAliens.setText("Aliens");
 			}
 		});
 		showMyAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				showMyAliens.setText("Loading...");
+				
 				achievementList.removeAllElements();
+				
 				ArrayList<Alien> gotten = General.getAllAliens(true);
 				
 				for(int i = 0; i < gotten.size(); i++) {
 					achievementList.addElement(gotten.get(i));
 				}
 				
-				achievements.setModel(achievementList);
+				showMyAliens.setText("My Aliens");
 			}
 		});
 		showArts.addActionListener(new ActionListener() {
@@ -125,15 +132,18 @@ public class CollectionPanel extends JPanel{
 }
 
 
-class CollectionCellRenderer extends DefaultListCellRenderer {
-	public Component getListCellRendererComponent(JList list, InventoryItem value, int index, boolean isSelected, boolean cellHasFocus) {
-		Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-		if((value.getItemType() == 'a' && General.haveAlien((Alien)value)) || (value.getItemType() == 'r' && General.haveArtifact((Artifact)value))){
-			c.setForeground(new Color(200, 255, 200));
+class CollectionCellRenderer extends JLabel implements ListCellRenderer {
+
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				
+		if((((InventoryItem)value).getItemType() == 'a' && General.haveAlien((Alien)value)) || (((InventoryItem)value).getItemType() == 'r' && General.haveArtifact((Artifact)value))){
+			setBackground(Color.green);
 		}
 		else {
-			c.setForeground(new Color(255, 200, 200));
+			setBackground(Color.gray);
 		}
-		return c;
+		setText(((InventoryItem)value).getName());
+		setOpaque(true);
+		return this;
 	}
 }
