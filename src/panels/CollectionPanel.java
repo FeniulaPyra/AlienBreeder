@@ -2,6 +2,7 @@ package panels;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,9 +10,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -24,16 +28,21 @@ import general.General;
 import general.Profile;
 import items.Alien;
 import items.Artifact;
+import items.Breed;
 import items.InventoryItem;
 
 public class CollectionPanel extends JPanel{
 	JPanel buttonPanel;
 	JScrollPane listPanel;
 	
+	JLabel instructions;
+	
 	JButton showArts;
 	JButton showMyArts;
-	JButton showAliens;
 	JButton showMyAliens;
+	
+	JComboBox breedToShow;
+	DefaultComboBoxModel<Breed> breedsList;
 	
 	JList<InventoryItem> achievements;
 	DefaultListModel<InventoryItem> achievementList;
@@ -41,58 +50,66 @@ public class CollectionPanel extends JPanel{
 	Profile user;
 	
 	public CollectionPanel(Profile inUser) {
+		//sets up the button panel
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 		
-		
-		showArts = new JButton("Artifacts");
+		//sets up the buttons
+		showArts = new JButton("Show Artifacts");
 		showMyArts = new JButton("My artifacts");
-		showAliens = new JButton("Aliens");
 		showMyAliens = new JButton("My Aliens");
 		
+		//Sets up the list of aliens
 		achievementList = new DefaultListModel<InventoryItem>();
-
 		achievements = new JList<InventoryItem>(achievementList);
 		achievements.setCellRenderer(new CollectionCellRenderer());
-		//achievements.setModel(achievementList);
+		
+		//sets up the scrollpane
 		listPanel = new JScrollPane(achievements);
 		
+		//sets up the breed selector
+		breedsList = new DefaultComboBoxModel<Breed>();
+		breedToShow = new JComboBox<Breed>(breedsList);
+		breedToShow.setMaximumSize(new Dimension(200, 20));
+		breedToShow.setSelectedItem(null);
+		
+		for(int i = 0; i < General.BREEDS.length; i++)
+			breedsList.addElement(General.BREEDS[i]);
+
+		//sets the formatting in the frame
 		this.setLayout(new GridLayout(1, 2));
 		this.add(listPanel);
 		this.add(buttonPanel);
 		
-		//listPanel.add(achievements);
-		buttonPanel.add(showAliens);
+		//adds all of the buttons and things
+		buttonPanel.add(breedToShow);
 		buttonPanel.add(showMyAliens);
 		buttonPanel.add(showArts);
 		buttonPanel.add(showMyArts);
 		
 		user = inUser;
 		
+		//adds the panels to the frame and sets up listeners
 		add(buttonPanel);
 		add(listPanel);
 		collectionSetup();
 	}
 	
 	public void collectionSetup() {
-		showAliens.addActionListener(new ActionListener() {
+		breedToShow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showAliens.setText("Loading...");
-				
 				achievementList.removeAllElements();
 				
 				ArrayList<Alien> allAliens = General.getAllAliens(false);
 				
 				for(int i = 0; i < allAliens.size(); i++) {
-					achievementList.addElement(allAliens.get(i));
-				}				
-				showAliens.setText("Aliens");
+					if(allAliens.get(i).getBreed().equals(breedToShow.getSelectedItem()))
+						achievementList.addElement(allAliens.get(i));
+				}
 			}
 		});
 		showMyAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showMyAliens.setText("Loading...");
-				
 				achievementList.removeAllElements();
 				
 				ArrayList<Alien> gotten = General.getAllAliens(true);
@@ -101,15 +118,16 @@ public class CollectionPanel extends JPanel{
 					achievementList.addElement(gotten.get(i));
 				}
 				
-				showMyAliens.setText("My Aliens");
 			}
 		});
 		showArts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
 				
+				ArrayList<Artifact> gotten = General.getAllArts(false);
+				
 				for(int i = 0; i < General.getArtifactSize(); i++) {
-					achievementList.addElement(General.getArt(i));
+					achievementList.addElement(gotten.get(i));
 				}
 				
 				achievements.setModel(achievementList);
@@ -119,9 +137,11 @@ public class CollectionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				achievementList.removeAllElements();
 				
+				ArrayList<Artifact> gotten = General.getAllArts(true);
+				
 				for(int i = 0; i < General.getArtifactSize(); i++) {
 					if(General.haveArtifact(i)) {
-						achievementList.addElement(General.getArt(i));
+						achievementList.addElement(gotten.get(i));
 					}
 				}
 				

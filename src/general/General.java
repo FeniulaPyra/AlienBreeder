@@ -528,6 +528,21 @@ public abstract class General {
 		}
 		return gotten;
 	}
+	public static ArrayList<Artifact> getAllArts(boolean achieved) {
+		ArrayList<Artifact> gotten = new ArrayList<Artifact>();
+		try {
+			ResultSet arts = mainCon.createStatement().executeQuery("SELECT * FROM artifacts;");
+			do {
+				if((achieved && arts.getInt("has") == 1) || !achieved) {
+					gotten.add(new  Artifact(BREEDS[arts.getInt("breed")], arts.getString("material"), arts.getString("type")));
+				}
+			}while(arts.next());
+		}catch(SQLException s) {
+			System.out.println("Can't get gotten arts: ");
+			s.printStackTrace();
+		}
+		return gotten;
+	}
 	
 	
 	//~~OTHER~~\\
