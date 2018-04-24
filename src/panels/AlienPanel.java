@@ -236,29 +236,29 @@ public class AlienPanel extends JPanel {
 	 */
 	//TODO there is a weird thing here it adds the aliens twice?
 	public void updateComboBox() {
-		selection.removeAllItems();
+		//selection.removeAllItems();
+		for(int i = 0; selection.getItemCount() > 0; i++) {
+			System.out.println("thing at 0 " + selection.getItemAt(0));
+			selection.removeItemAt(0);
+		}
+		//DefaultComboBoxModel<Alien> things = new DefaultComboBoxModel<Alien>(user.aliens.toArray(new Alien[user.aliens.size()]));
+		//selection.setModel(things);
+		//for(int i = 0; i < things.getSize(); i++) { System.out.println("in box" + selection.getItemAt(i));}
 		for(Alien adding : user.aliens) {
+			
 			selection.addItem(adding);
+			//System.out.println(adding);
+			//System.out.println("actual " + selection.getSelectedItem());
+			updateLabels();
 		}
 	}
 	public void updateLabels() {
-		/*selection.removeAllItems();
-		//TODO what the heck it runs the following 5 lines of code twice, but not the previous one???
-		System.out.println("after deleting");
-		for(int i = 0; i < user.aliens.size(); i++) {
-			selection.addItem(user.aliens.get(i));
-			System.out.println(selection.getItemCount() + "adding one to alien selection" + user.aliens.size());
-		}
-		System.out.println("out");
-		for(Alien adding : user.aliens) {
-			selection.addItem(adding);
-			System.out.println("adding one to alien selection");
-		}*/
 		toDisplay = (Alien)selection.getSelectedItem();
-		
-		nameLabel.setText("Name: " + toDisplay.getName());
-		value.setText("$" + toDisplay.getValue());
-		intel.setText("Intelligence: " + toDisplay.getIntel());
-		strength.setText("Strength: " + toDisplay.getStrength());
+		if(toDisplay != null) {
+			nameLabel.setText("Name: " + toDisplay.getName());
+			value.setText("$" + toDisplay.getValue());
+			intel.setText("Intelligence: " + toDisplay.getIntel());
+			strength.setText("Strength: " + toDisplay.getStrength());
+		}
 	}
 }

@@ -67,9 +67,9 @@ public class ShopPanel extends JPanel {
 				if(user.getCoins() - (toBuy.getValue() * 2) >= 0) {
 					toSell.addItem(toBuy);
 					
-					if(toBuy.getClass().toString() == "Alien")
+					if(toBuy.getItemType() == 'a')
 						user.add((Alien)toBuy);
-					else if(toBuy.getClass().toString() == "Artifact")
+					else if(toBuy.getItemType() == 'r')
 						user.add((Artifact)toBuy);
 					
 					user.addCoins(toBuy.getValue() * -2);

@@ -1,6 +1,8 @@
 package items;
 
-public abstract class InventoryItem {
+import java.io.Serializable;
+
+public abstract class InventoryItem implements Serializable {
 	String name;
 	//TODO switch to an enum?
 	char itemType;

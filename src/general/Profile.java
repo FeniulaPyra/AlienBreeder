@@ -79,9 +79,6 @@ public class Profile implements Serializable{
 		}
 	}
 	
-	//NOTE these methods might seem redundant, because the arrays are public, but they aren't redundant, because they sort stuff.
-	//NOTE there's probably too many anyways but meh
-	
 	//Adds individual things
 	public void add(Alien toAdd) {
 		if(!aliens.isEmpty()) {
@@ -108,8 +105,6 @@ public class Profile implements Serializable{
 	}
 	public void add(Junk toAdd) {
 		if(other.size() != 0) {
-			System.out.println(other.size());
-			System.out.println(other.get(0));
 			int i;
 			for(i = other.size() - 1; i >= 0 && other.get(i).getName().compareTo(toAdd.getName()) > 0; i--) {}
 			if(i >= 0) {
@@ -155,9 +150,6 @@ public class Profile implements Serializable{
 					add((Junk)toAdd.get(i));
 					break;
 			}
-		}
-		for(int i = 0; i < other.size(); i++) {
-			System.out.println(other.get(i).getName());
 		}
 	}
 	
