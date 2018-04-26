@@ -1,6 +1,7 @@
 package general;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.sqlite.*;
 import items.*;
@@ -543,7 +544,33 @@ public abstract class General {
 		}
 		return gotten;
 	}
-	
+	public static ArrayList<Alien> getAliensOfType(Breed inB, String inType) {
+		ArrayList<Alien> toSend = new ArrayList<Alien>();
+		String typeValue = "";
+		if((Arrays.asList(B_COLORS)).contains(inType)) {
+			typeValue = "color";
+		}
+		if((Arrays.asList(B_PATTERNS)).contains(inType)) {
+			typeValue = "pattern";
+		}
+		if((Arrays.asList(B_PAT_COLORS)).contains(inType)) {
+			typeValue = "pattern_color";
+		}
+		
+		try {
+			ResultSet addAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE breed = " + inB.getName() + " AND " + typeValue + " = " + inType + ";");
+			do {
+				toSend.add(new Alien(BREEDS[addAlien.getInt("breed")], addAlien.getString("color"), addAlien.getString("pattern"), addAlien.getString("pattern_ color")));
+			} while(addAlien.next());
+		}
+		catch(SQLException s) {
+			System.out.println("Error: Could not find aliens of type and breed.");
+			s.printStackTrace();
+		}
+		
+		
+		return toSend;
+	}
 	
 	//~~OTHER~~\\
 	public static int countChar(String str, char toFind) {

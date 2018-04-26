@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import general.General;
 import general.Profile;
 import items.Alien;
+import items.Breed;
 
 public class QuestPanel extends JPanel {
 	//The quest descriptions
@@ -25,8 +26,9 @@ public class QuestPanel extends JPanel {
 	
 	//the alien for the single quest
 	Alien single;
-	String multiValueA; //can be any of the three non-breed values
-	String multiValueB;
+	
+	Breed multiBreed; 
+	String multiValue; //can be any of the non-breed values
 	ArrayList<Alien> multi;
 	
 	//the user
@@ -40,6 +42,19 @@ public class QuestPanel extends JPanel {
 	public QuestPanel(Profile inUser) {
 		//sets the user
 		user = inUser;
+
+		multiBreed = General.getRandomBreed(user.getLevel());
+		switch((int)(Math.random() * 3)) {
+			case 0:
+				multiValue = General.getRandomPattern();
+				break;
+			case 1:
+				multiValue = General.getRandomPatternColor();
+				break;
+			default:
+				multiValue = General.getRandomColor();
+		}
+		multi = General.getAliensOfType(multiBreed, multiValue);
 		
 		//sets the quests
 		singleQuest = new JLabel("");
@@ -72,7 +87,11 @@ public class QuestPanel extends JPanel {
 		completeGroup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(user.aliens.containsAll(multi)) {
-					
+					for(int i = 0; i < multi.size(); i++) {
+						user.addCoins(multi.get(i).getValue() * 2);
+						user.addExp(multi.get(i).getValue() * 2);
+						
+					}
 				}
 			}
 		});
