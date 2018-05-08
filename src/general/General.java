@@ -557,8 +557,16 @@ public abstract class General {
 			typeValue = "pattern_color";
 		}
 		
-		try {
-			ResultSet addAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE breed = " + inB.getName() + " AND " + typeValue + " = " + inType + ";");
+		ArrayList<Alien> temp = getAllAliens(false);
+		for(int i = 0; i < temp.size(); i++) {
+			if(temp.get(i).getBreed() == inB && temp.get(i).getName().contains(inType)) {
+				toSend.add(temp.get(i));
+			}
+		}
+		
+		
+		/*try {
+			ResultSet addAlien = mainCon.createStatement().executeQuery("SELECT * FROM aliens WHERE breed = \"" + inB.getName() + "\" AND " + typeValue + " = \"" + inType + "\";");
 			do {
 				toSend.add(new Alien(BREEDS[addAlien.getInt("breed")], addAlien.getString("color"), addAlien.getString("pattern"), addAlien.getString("pattern_ color")));
 			} while(addAlien.next());
@@ -566,7 +574,7 @@ public abstract class General {
 		catch(SQLException s) {
 			System.out.println("Error: Could not find aliens of type and breed.");
 			s.printStackTrace();
-		}
+		}*/
 		
 		
 		return toSend;

@@ -2,6 +2,8 @@ package items;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import general.*;
 
 public class Alien extends InventoryItem {
@@ -147,50 +149,51 @@ public class Alien extends InventoryItem {
 		boolean hasAlien = false;
 		ArrayList<Alien> offspring = new ArrayList<Alien>();
 		
+		Breed newBreed;
+		String breedColor;
+		String pattern;
+		String patternColor;
+		
 		for(int i = 0; i < 16; i++) {
 			//this for loop uses a binary number to count up to 15 from zero. Each place in the four-digit binary number is essentially a boolean representing
 			//one of the traits of an alien. A 0 signifies that the child will have the kind of trait of the first parent, and a 1 signifies that the child will
 			//have the trait of the second parent
 			String traits = Integer.toBinaryString(i) + "000";
 			
-			//the potential child alien
-			Alien toAdd = new Alien();
-			
 			//checks the traits of the possible alien child
 			//breed
 			if(traits.charAt(0) == '0') {
-				toAdd.setBreed(mainBreed);
+				newBreed = mainBreed;
 			}
 			else {
-				toAdd.setBreed(mate.getBreed());
+				newBreed = mate.getBreed();
 			}
 			
 			//main color
 			if(traits.charAt(1) == '0') {
-				toAdd.setBreedColor(bColor);
+				breedColor = bColor;
 			}
 			else {
-				toAdd.setBreedColor(mate.getBreedColor());
+				breedColor = mate.getBreedColor();
 			}
 			
 			//pattern
 			if(traits.charAt(2) == '0') {
-				toAdd.setBreedPattern(bPattern);
+				pattern = bPattern;
 			}
 			else {
-				toAdd.setBreedPattern(mate.getBreedPattern());
+				pattern = mate.getBreedPattern();
 			}
 			
 			//pattern color
 			if(traits.charAt(3) == '0') {
-				toAdd.setBreedPatternColor(bPatColor);
+				patternColor = bPatColor;
 			}
 			else {
-				toAdd.setBreedPatternColor(mate.getBreedPatternColor());
+				patternColor = mate.getBreedPatternColor();
 			}
 			
-			toAdd.name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
-			
+			Alien toAdd = new Alien(newBreed, breedColor, pattern, patternColor);
 			//checks to make sure the program doesn't show the same possible child twice.
 			for(int q = 0; q < offspring.size(); q++) {
 				if(toAdd.equals(offspring.get(q))) {
@@ -206,7 +209,15 @@ public class Alien extends InventoryItem {
 		return offspring;
 	}
 	public boolean equals(Alien otherAlien) {
-		return (otherAlien.getBreed().equals(mainBreed) && otherAlien.getBreedColor().equals(bColor) && otherAlien.getBreedPattern().equals(bPattern) && otherAlien.getBreedPatternColor().equals(bPatColor));
+		return (this.toString().equals(otherAlien.toString()));
+	}
+	public int hashCode() {
+		int cID = Arrays.asList(General.B_COLORS).indexOf(bColor);
+		int pID = Arrays.asList(General.B_PATTERNS).indexOf(bPattern);
+		int pcID = Arrays.asList(General.B_PAT_COLORS).indexOf(bPatColor);
+		int bID = Arrays.asList(General.BREEDS).indexOf(mainBreed);
+		
+		return (bID * 810) + (cID * 81) + (pID * 9) + (pcID * 1) + 1;
 	}
 	public String output() {
 		return (name

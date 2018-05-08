@@ -105,8 +105,7 @@ public class AlienPanel extends JPanel {
 		});
 		breed.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO messy!
-				//TODO 
+
 				ArrayList<Alien> tempAliens = new ArrayList<Alien>(user.aliens);
 				tempAliens.remove(selection.getSelectedItem());
 				
@@ -234,18 +233,16 @@ public class AlienPanel extends JPanel {
 	 * Updates the alien panel labels to show the selected alien's information, as well as have the
 	 * jcombobox show the selected aliens.
 	 */
-	//TODO there is a weird thing here it adds the aliens twice?
 	public void updateComboBox() {
 		//selection.removeAllItems();
 		for(int i = 0; selection.getItemCount() > 0; i++) {
-			System.out.println("thing at 0 " + selection.getItemAt(0));
+			//System.out.println("thing at 0 " + selection.getItemAt(0));
 			selection.removeItemAt(0);
 		}
 		//DefaultComboBoxModel<Alien> things = new DefaultComboBoxModel<Alien>(user.aliens.toArray(new Alien[user.aliens.size()]));
 		//selection.setModel(things);
 		//for(int i = 0; i < things.getSize(); i++) { System.out.println("in box" + selection.getItemAt(i));}
 		for(Alien adding : user.aliens) {
-			
 			selection.addItem(adding);
 			//System.out.println(adding);
 			//System.out.println("actual " + selection.getSelectedItem());
@@ -254,11 +251,13 @@ public class AlienPanel extends JPanel {
 	}
 	public void updateLabels() {
 		toDisplay = (Alien)selection.getSelectedItem();
-		if(toDisplay != null) {
+		try {
 			nameLabel.setText("Name: " + toDisplay.getName());
 			value.setText("$" + toDisplay.getValue());
 			intel.setText("Intelligence: " + toDisplay.getIntel());
 			strength.setText("Strength: " + toDisplay.getStrength());
+		} catch(NullPointerException n) {
+			
 		}
 	}
 }

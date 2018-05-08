@@ -45,6 +45,11 @@ public class MainGame extends JFrame {
 	private JLabel level;
 	private static final String SAVE = "saves\\";
 	
+	//***FOR DEBUG***\\
+	private static JButton addGold = new JButton("Gold++");
+	private static JButton getAlienOf = new JButton("Get alien");
+	
+	
 	
 	public static void main(String args[]) {
 		new MainGame();
@@ -83,7 +88,9 @@ public class MainGame extends JFrame {
 		mainPanel.add(exp);
 		mainPanel.add(saveButton);
 		mainPanel.add(loadButton);
-
+		mainPanel.add(addGold);
+		mainPanel.add(getAlienOf);
+		
 		aliens = new AlienPanel(user);
 		work = new WorkPanel(user);
 		quests = new QuestPanel(user);
@@ -156,8 +163,20 @@ public class MainGame extends JFrame {
 				
 				shop.shopUpdate();
 				shop.updateSellables();
+				aliens.updateComboBox();
 				
 				updateValuesUI();
+			}
+		});
+		addGold.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				user.addCoins(1000000);
+			}
+		});
+		getAlienOf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int id = Integer.parseInt(JOptionPane.showInputDialog("Enter the ID: "));
+				user.add(General.getAlien(id));
 			}
 		});
 	}

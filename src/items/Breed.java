@@ -2,7 +2,7 @@ package items;
 
 import java.io.Serializable;
 
-//TODO base values
+//TODO switch to a InventoryItem?
 public class Breed implements Serializable {
 	private String name;
 	private int level;

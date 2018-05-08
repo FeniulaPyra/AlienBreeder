@@ -43,6 +43,8 @@ public class QuestPanel extends JPanel {
 		//sets the user
 		user = inUser;
 
+		single = General.getRandAlien(user.getLevel());
+		
 		multiBreed = General.getRandomBreed(user.getLevel());
 		switch((int)(Math.random() * 3)) {
 			case 0:
@@ -57,8 +59,8 @@ public class QuestPanel extends JPanel {
 		multi = General.getAliensOfType(multiBreed, multiValue);
 		
 		//sets the quests
-		singleQuest = new JLabel("");
-		groupQuest = new JLabel("Type: \n");
+		singleQuest = new JLabel("" + single);
+		groupQuest = new JLabel("Type: " + multiValue + "\n Breed: " + multiBreed);
 		
 		//creates the complete buttons
 		completeSingle = new JButton("Complete Single");
@@ -72,15 +74,29 @@ public class QuestPanel extends JPanel {
 		add(completeSingle);
 		add(groupQuest);
 		add(completeGroup);
+		questSetup();
 	}
 	public void questSetup() {
 		completeSingle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(user.aliens.contains(single)) {
+				
+				boolean hasAlien = false;
+				int alien = 0;
+				
+				for(int i = 0; i < user.aliens.size(); i++) {
+					if(user.aliens.get(i).equals(single)) {
+						hasAlien = true;
+						alien = i;
+					}
+				}
+				
+				if(hasAlien) {
 					user.addExp(single.getValue() * 2);
 					user.addCoins(single.getValue() * 2);
-					user.aliens.remove(single);
+					user.aliens.remove(alien);
 					single = new Alien(user.getLevel());
+					System.out.println(single);
+					updateQuests();
 				}
 			}
 		});
@@ -95,6 +111,11 @@ public class QuestPanel extends JPanel {
 				}
 			}
 		});
+	}
+	public void updateQuests() {
+		singleQuest.setText("" + single);// = new JLabel("" + single);
+		System.out.println(single);
+		groupQuest.setText("Type: " + multiValue + "\n Breed: " + multiBreed);
 	}
 	
 }
