@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -95,42 +97,52 @@ public class CollectionPanel extends JPanel{
 		collectionSetup();
 	}
 	
+	//sets up actionlisteners
 	public void collectionSetup() {
+		//when user changes shown breed
 		breedToShow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//clears list
 				achievementList.removeAllElements();
 				
 				ArrayList<Alien> allAliens = General.getAllAliens(false);
 				
+				//adds all the aliens of that breed
 				for(int i = 0; i < allAliens.size(); i++) {
 					if(allAliens.get(i).getBreed().equals(breedToShow.getSelectedItem()))
 						achievementList.addElement(allAliens.get(i));
 				}
 			}
 		});
+		//shows all the aliens the user has ever gotten
 		showMyAliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//clears list
 				achievementList.removeAllElements();
-				
+	
 				ArrayList<Alien> gotten = General.getAllAliens(true);
 				
+				//adds all aliens user has
 				for(int i = 0; i < gotten.size(); i++) {
 					achievementList.addElement(gotten.get(i));
 				}
 				
 			}
 		});
+		//shows all artifacts
 		showArts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//clears list
 				achievementList.removeAllElements();
 				
 				ArrayList<Artifact> gotten = General.getAllArts(false);
 				
-				for(int i = 0; i < General.getArtifactSize(); i++) {
+				//adds all the arts 
+				for(int i = 0; i < gotten.size(); i++) {
 					achievementList.addElement(gotten.get(i));
 				}
 				
-				achievements.setModel(achievementList);
+				//achievements.setModel(achievementList);
 			}
 		});
 		showMyArts.addActionListener(new ActionListener() {
@@ -139,13 +151,11 @@ public class CollectionPanel extends JPanel{
 				
 				ArrayList<Artifact> gotten = General.getAllArts(true);
 				
-				for(int i = 0; i < General.getArtifactSize(); i++) {
-					if(General.haveArtifact(i)) {
-						achievementList.addElement(gotten.get(i));
-					}
+				for(int i = 0; i < gotten.size(); i++) {
+					achievementList.addElement(gotten.get(i));
 				}
 				
-				achievements.setModel(achievementList);
+				//achievements.setModel(achievementList);
 			}
 		});
 	}
@@ -155,11 +165,30 @@ public class CollectionPanel extends JPanel{
 class CollectionCellRenderer extends JLabel implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				
-		if((((InventoryItem)value).getItemType() == 'a' && General.haveAlien((Alien)value)) || (((InventoryItem)value).getItemType() == 'r' && General.haveArtifact((Artifact)value))){
+		if(((InventoryItem)value).getItemType() == 'r'){
+			
+			ArrayList<Artifact> gotten = General.getAllArts(true);
+			boolean haveArt = false;
+			
+			//because this program hates the haveArtifact method. -_-
+			for(int i = 0; i < gotten.size(); i++) {
+				if(gotten.get(i).toString().equals(((Artifact)value).toString())) {
+					haveArt = true;
+				}
+			}
+			if(haveArt)
+				//colors it green if have the art
+				setBackground(Color.green);
+			else
+				//colors gray if not
+				setBackground(Color.gray);
+		}
+		else if(((InventoryItem)value).getItemType() == 'a' && General.haveAlien((Alien)value)){
+			//colors green if have alien
 			setBackground(Color.green);
 		}
 		else {
+			//colors gray if not.
 			setBackground(Color.gray);
 		}
 		setText(((InventoryItem)value).getName());

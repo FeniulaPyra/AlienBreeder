@@ -18,6 +18,7 @@ public class Artifact extends InventoryItem {
 		alienType = inAlien;
 		itemType = 'r';
 	}
+	//Copy constructor for artifacts
 	public Artifact(Artifact copyArtifact) {
 		alienType = copyArtifact.getBreed();
 		level = alienType.getLevel();
@@ -25,6 +26,7 @@ public class Artifact extends InventoryItem {
 		name = copyArtifact.getName();
 		itemType = 'r';
 	}
+	//creates an artifact given an id
 	public Artifact(int inLvl) {
 		this(General.getRandArtifact(inLvl));
 	}

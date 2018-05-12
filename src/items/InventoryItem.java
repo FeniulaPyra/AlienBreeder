@@ -4,16 +4,19 @@ import java.io.Serializable;
 
 public abstract class InventoryItem implements Serializable {
 	String name;
-	//TODO switch to an enum?
+	//tells whether the item is an alien, artifact, or junk.
 	char itemType;
 	int value;
 	
+	//*~~~SETTERS~~~*\\
 	public void setName(String inName) {
 		name = inName;
 	}
 	public void setValue(int inValue) {
 		value = inValue;
 	}
+	
+	//*~~~GETTERS~~~*\\
 	public String getName() {
 		return name;
 	}
@@ -23,6 +26,8 @@ public abstract class InventoryItem implements Serializable {
 	public int getValue() {
 		return value;
 	}
+	
+	//overides tostring
 	public String toString() {
 		return name;
 	}

@@ -40,68 +40,15 @@ public class Alien extends InventoryItem {
 		value = strength + intelligence + mainBreed.getBaseVal();
 		itemType = 'a';
 	}
-	
+	//copy constructor for aliens
 	public Alien(Alien copyAlien) {
 		this(copyAlien.getBreed(), copyAlien.getBreedColor(), copyAlien.getBreedPattern(), copyAlien.getBreedPatternColor());
 	}
-	
+	//creates an alien based on lvl
 	public Alien(int inLvl) {
 		this(General.getRandAlien(inLvl));
 	}
 	
-	/*public Alien(int inLvl) {
-		//TODO
-		try {
-			ResultSet aliens = General.mainCon.createStatement().executeQuery("SELECT * FROM aliens, breeds where breeds.level = " + inLvl + " AND aliens.breed = breeds.id ORDER BY RANDOM();");
-			for(int i = 0; i < General.BREEDS.length; i++) {
-				if(General.BREEDS[i].getName().equals(aliens.getString("breed"))) {
-					mainBreed = General.BREEDS[i];
-				}
-			}
-			bColor = aliens.getString("base_color");
-			bPattern = aliens.getString("pattern");
-			bPatColor = aliens.getString("pattern_color");
-		}
-		catch(SQLException s) {
-			System.out.println("SQL Exception when creating random alien!");
-		}
-		strength = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
-		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
-	}*/
-	/*
-	 * Generates a random Alien based off of the player's level
-	 * @param inLvl the player's level
-	 */
-	/*public Alien(int inLvl) {
-		//TODO pull the random alien from the database rather than doing this painfulness
-		//the indexes bookending the breeds with the same level as the player
-		int startSect;
-		int endSect;
-		
-		//finds the start sections
-		for(startSect = -1; startSect < General.BREEDS.length - 1 && General.BREEDS[startSect + 1].getLevel() != inLvl; startSect++) {}
-		
-		//finds the end section
-		for(endSect = General.BREEDS.length; endSect > startSect && General.BREEDS[endSect - 1].getLevel() != inLvl; endSect--) {}
-		
-		//gets the random alien
-		int randomAlienID = (int)(Math.random() * (endSect - startSect) + startSect);
-		
-		//sets all of the breed/etc
-		mainBreed = General.BREEDS[randomAlienID];
-		bColor =  General.getRandomColor();
-		bPattern = General.getRandom;
-		bPatColor = General.B_PAT_COLORS[(int)(Math.random() * General.B_PAT_COLORS.length)];
-		
-		//randomizes numeric values
-		strength = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
-		intelligence = (mainBreed.getLevel() * 10) + ((int)(Math.random() * mainBreed.getLevel() - (mainBreed.getLevel() * 2)));
-		value = strength + intelligence + mainBreed.getBaseVal();
-		
-		//sets name to breed/etc
-		name = bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
-	}
-	*/
 	//*~~~SETTERS~~~*\\
 	public void setBreed(Breed inB) {
 		mainBreed = inB;
@@ -144,6 +91,7 @@ public class Alien extends InventoryItem {
 	
 	//*~~~OTHER~~~*\\
 	
+	//generates possible offspring between this and another alien
 	public ArrayList<Alien> generatePotentialOffspring(Alien mate) {
 		
 		boolean hasAlien = false;
@@ -158,6 +106,7 @@ public class Alien extends InventoryItem {
 			//this for loop uses a binary number to count up to 15 from zero. Each place in the four-digit binary number is essentially a boolean representing
 			//one of the traits of an alien. A 0 signifies that the child will have the kind of trait of the first parent, and a 1 signifies that the child will
 			//have the trait of the second parent
+			//adds 000 at end in case of integer requiring less than 4 characters to form.
 			String traits = Integer.toBinaryString(i) + "000";
 			
 			//checks the traits of the possible alien child
@@ -208,9 +157,12 @@ public class Alien extends InventoryItem {
 		
 		return offspring;
 	}
+	
+	//overrides equals to check name
 	public boolean equals(Alien otherAlien) {
 		return (this.toString().equals(otherAlien.toString()));
 	}
+	//overrides haschcode to return the id of the alien. 
 	public int hashCode() {
 		int cID = Arrays.asList(General.B_COLORS).indexOf(bColor);
 		int pID = Arrays.asList(General.B_PATTERNS).indexOf(bPattern);
@@ -219,6 +171,7 @@ public class Alien extends InventoryItem {
 		
 		return (bID * 810) + (cID * 81) + (pID * 9) + (pcID * 1) + 1;
 	}
+	//debugging stuff. outputs all info for alien.
 	public String output() {
 		return (name
 				+ "\n\t Type: " + bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName()
@@ -226,9 +179,11 @@ public class Alien extends InventoryItem {
 				+ "\n\t Intelligence: " + intelligence
 				+ "\n\t Strength: " + strength);
 	}
+	//overrides tostring to output name only
 	public String toString() {
 		return bColor + " " + bPatColor + " " + bPattern + " " + mainBreed.getName();
 	}
+	//calculates the alien's value
 	public void recalculateVal() {
 		value = strength + intelligence + mainBreed.getBaseVal();
 	}

@@ -9,29 +9,25 @@ import javax.swing.*;
 import items.*;
 import general.*;
 
-//TODO use a boxlayout nested in a 2-column, 1-row gridlayout
-//Gah ^
 public class AlienPanel extends JPanel {
 	
+	//arrays of options for  the joptionpains. yes. joptionPAINS.
 	public final String[] COMPETITIONS = {"Intelligence", "Strength", "Cancel"};
 	public final String[] DICE = {"No", "2-sided ($20)", "4-sided ($40)", "6-sided ($60)"};
 	
 	public JButton sell; //opens confirmation box, yes sells, no cancels
 	public JButton rename; //opens dlg box with input, takes new name, has cancel button
 	public JButton breed; //opens dlg box with list of other aliens. upon selection, opens another dlg box showing possible offspring, upon confirm, breed, upon cancel, go back to prev box
-	public JButton compete; //idk man TODO
-	public JButton update;
+	public JButton compete; //competes with dice between selected alien and another random alien. 
 	
 	public JLabel nameLabel; //the alien's breed, pattern, color, etc
 	public JLabel value;
 	public JLabel intel;
 	public JLabel strength;
-	public JLabel picture; //TODO will probably have to switch this to a graphics pane or something because recoloring. for now, leave it
 	
 	public JComboBox<Alien> selection;
 	public Alien toDisplay;
-	public ImageIcon breedPic; //<< need the other things too.
-	
+
 	public Profile user;
 	
 	/**
@@ -44,15 +40,12 @@ public class AlienPanel extends JPanel {
 		sell = new JButton("Sell");
 		rename = new JButton("Rename");
 		breed = new JButton("Breed");
-		compete = new JButton("Compete (WIP) ");
+		compete = new JButton("Compete");
 		nameLabel = new JLabel("Name: ");
 		value = new JLabel("$");
 		intel = new JLabel("Intelligence: ");
 		strength = new JLabel("Strength");
-		
-		//sets to null because i haven't done this yet TODO
-		breedPic = null;
-		picture = null;
+
 		
 		//populates the combo box with the user's aliens
 		selection = new JComboBox<Alien>(inUser.aliens.toArray(new Alien[inUser.aliens.size()]));
@@ -60,6 +53,7 @@ public class AlienPanel extends JPanel {
 		selection.setSelectedItem(0);
 		toDisplay = (Alien)selection.getSelectedItem();
 		
+		//makes everything in one column yay
 		this.setLayout(new GridLayout(9, 1));
 		
 		//adds each component
@@ -73,8 +67,10 @@ public class AlienPanel extends JPanel {
 		add(compete);
 		add(sell);
 		
+		//gets the user.
 		user = inUser;
 		
+		//sets up the labels and whatnot
 		alienSetup();
 		updateLabels();
 	}
@@ -83,45 +79,56 @@ public class AlienPanel extends JPanel {
 	 * Sets up the actionListeners for all of the components in the alien panel
 	 */
 	private void alienSetup() {
+		//sells selected alien
 		sell.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//opens confirmation box
-				//if yes...
+				//double checks with user
 				if(JOptionPane.showConfirmDialog(null, "Do you want to sell this" + toDisplay.getName() + "alien?", "Sell Alien", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+					//adds coins and deletes the alien
 					user.addCoins(toDisplay.getValue());
 					user.aliens.remove(selection.getSelectedItem());
 					selection.removeItemAt(selection.getSelectedIndex());
 				}
 			}
 		});
+		//renames selected alien
 		rename.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//opens input dialog box and asks for new name.
 				String newName = JOptionPane.showInputDialog("Please type the new name: ");
+				//avoids nullpointers
 				if(newName != null )
 					toDisplay.setName(newName);
 				updateLabels();
 			}
 		});
+		//breeds two aliens together
 		breed.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
+				//this holds all the other aliens but the one that was originally selected. Aliens are not asexually reproducing creatures.
 				ArrayList<Alien> tempAliens = new ArrayList<Alien>(user.aliens);
 				tempAliens.remove(selection.getSelectedItem());
 				
+				//picks another alien
 				Alien otherAlien = (Alien)JOptionPane.showInputDialog(null, "Pick a second alien:", "Breeding", JOptionPane.PLAIN_MESSAGE, null, tempAliens.toArray(), null);
+				//double checks with user and shows possible offspring
 				if(otherAlien != null && JOptionPane.showInputDialog(null, "Are you sure? these are the possible offspring:", "Breeding Confirm", JOptionPane.PLAIN_MESSAGE, null, ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien).toArray(), null) != null) {
 					ArrayList<Alien> maybeBabies = ((Alien)selection.getSelectedItem()).generatePotentialOffspring(otherAlien);
 					
+					//gets a random baby from the possible alien babies
 					Alien baby = (maybeBabies.get((int)(Math.random() * maybeBabies.size())));
+					//adds the baby and gives the exp to the user.
 					user.add(baby);
 					user.addExp(baby.getValue()/2);
 					
+					//shows dialog showing that the user got a baby alien
 					JOptionPane.showMessageDialog(null, "YAY! You got a(n) " + baby);
 					updateComboBox();
 				}
 			}
 		});
+		//updates the labels depending on what alien is selected
 		selection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(selection.getItemCount() > 0) {
@@ -130,13 +137,16 @@ public class AlienPanel extends JPanel {
 				}
 			}
 		});
+		//compete with alien
 		compete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//gets a random alien within user's level range to compete against
 				Alien opponent = new Alien(user.getLevel());
 				Alien self = (Alien)selection.getSelectedItem();
 				int newIntel = 1;
 				int sides;
-				//TODO this can probably be made more efficient and pretty and stuff
+				
+				//prompts user to pick a competition to compete in
 				switch(JOptionPane.showOptionDialog(null, "What do you want to compete in?", "Compete!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, COMPETITIONS, COMPETITIONS[0])) {
 					case 0: //Intelligence Competition
 						//shows the opponent's stat and allows the user to roll a dice
@@ -250,14 +260,16 @@ public class AlienPanel extends JPanel {
 		}
 	}
 	public void updateLabels() {
+		//sets the displayed alien to the one selected
 		toDisplay = (Alien)selection.getSelectedItem();
 		try {
+			//updates labels to reflect the selected alien's values
 			nameLabel.setText("Name: " + toDisplay.getName());
 			value.setText("$" + toDisplay.getValue());
 			intel.setText("Intelligence: " + toDisplay.getIntel());
 			strength.setText("Strength: " + toDisplay.getStrength());
 		} catch(NullPointerException n) {
-			
+			//because not having an alien there is actually not the worst.
 		}
 	}
 }

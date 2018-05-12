@@ -89,7 +89,6 @@ public class QuestPanel extends JPanel {
 						alien = i;
 					}
 				}
-				
 				if(hasAlien) {
 					user.addExp(single.getValue() * 2);
 					user.addCoins(single.getValue() * 2);
@@ -102,12 +101,34 @@ public class QuestPanel extends JPanel {
 		});
 		completeGroup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(user.aliens.containsAll(multi)) {
-					for(int i = 0; i < multi.size(); i++) {
-						user.addCoins(multi.get(i).getValue() * 2);
-						user.addExp(multi.get(i).getValue() * 2);
-						
+				boolean hasAll = false;
+				boolean missingAny = false;
+				for(int u = 0; u < user.aliens.size() && !missingAny; u++) {
+					for(int q = 0; q < multi.size(); q++) {
+						if(user.aliens.get(u).equals(multi.get(q)))
+							hasAll = true;
 					}
+					missingAny = !hasAll;
+				}
+				if(hasAll) {
+					for(int i = 0; i < multi.size(); i++) {
+						user.addExp(multi.get(i).getValue() * 2);
+						user.addCoins(multi.get(i).getValue() * 2);
+						user.aliens.remove(multi.get(i));
+					}
+					multiBreed = General.getRandomBreed(user.getLevel());
+					switch((int)(Math.random() * 3)) {
+						case 0:
+							multiValue = General.getRandomPattern();
+							break;
+						case 1:
+							multiValue = General.getRandomPatternColor();
+							break;
+						default:
+							multiValue = General.getRandomColor();
+					}
+					multi = General.getAliensOfType(multiBreed, multiValue);
+					updateQuests();
 				}
 			}
 		});
